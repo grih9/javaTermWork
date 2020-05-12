@@ -7,27 +7,24 @@ import java.util.Objects;
 public class Articles {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Integer id;
+    @Column
+    private Long id;
 
-    @Column(name = "name", nullable = false)
+    @Column(nullable = false)
     private String name;
-
-    private String description;
 
     public Articles() {
     }
 
     public Articles(String name, String description) {
         this.name = name;
-        this.description = description;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -39,15 +36,6 @@ public class Articles {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -58,18 +46,17 @@ public class Articles {
         }
         Articles articles = (Articles) o;
         return id.equals(articles.id) &&
-                name.equals(articles.name) &&
-                description.equals(articles.description);
+                name.equals(articles.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description);
+        return Objects.hash(id, name);
     }
 
     @Override
     public String toString() {
-        return id + " : " + name + ". Description - " + description;
+        return id + " : " + name;
     }
 
 }

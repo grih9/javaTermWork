@@ -7,66 +7,65 @@ import java.util.Objects;
 public class Operations {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Integer id;
+    @Column
+    private Long id;
 
-    @Column(name = "articleId")
-    private Integer articleId;
+    @ManyToOne(targetEntity = Articles.class)
+    @JoinColumn(name = "article_id", nullable = false)
+    private Articles articles;
 
-    @Column(name = "debit")
+    @Column
     private Float debit;
 
-    @Column(name = "credit")
+    @Column
     private Float credit;
 
-    @Column(name = "creditDate", nullable = false)
+    @Column
     private String creditDate;
 
-    @Column(name = "balanceId")
-    private Integer balanceId;
-
-    private String description;
-
-    @ManyToOne
-    @JoinColumn(name = "articleId")
-    private Articles article;
-
-    @ManyToOne
-    @JoinColumn(name = "balanceId")
+    @ManyToOne(targetEntity = Balance.class)
+    @JoinColumn(name = "balance_id", nullable = false)
     private Balance balance;
+
+//    @ManyToOne
+//    @JoinColumn(name = "articleId")
+//    private Articles article;
+//
+//    @ManyToOne
+//    @JoinColumn(name = "balanceId")
+//    private Balance balance;
 
 
     public Operations() {
 
     }
 
-    public Operations(Integer articleId, Float debit, Float credit, String creditDate, Integer balanceId, String description) {
+    public Operations(Articles articles, Float debit, Float credit, String creditDate, Balance balance) {
         if ((credit < 0) || (debit < 0)) {
             throw new IllegalArgumentException("Приход и/или расход не могут быть отрицательными.");
         }
 
-        this.articleId = articleId;
+        this.articles = articles;
         this.debit = debit;
         this.credit = credit;
         this.creditDate = creditDate;
-        this.balanceId = balanceId;
-        this.description = description;
+        this.balance = balance;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public Integer getArticleId() {
-        return articleId;
+    public Articles getArticles() {
+        return articles;
     }
 
-    public void setArticleId(Integer articleId) {
-        this.articleId = articleId;
+    public void setArticles(Articles articles) {
+        this.articles = articles;
     }
 
     public Float getDebit() {
@@ -93,12 +92,12 @@ public class Operations {
         this.creditDate = creditDate;
     }
 
-    public Integer getBalanceId() {
-        return balanceId;
+    public Balance getBalance() {
+        return balance;
     }
 
-    public void setBalanceId(Integer balanceId) {
-        this.balanceId = balanceId;
+    public void setBalance(Balance balanceId) {
+        this.balance = balance;
     }
 
     @Override
@@ -113,23 +112,22 @@ public class Operations {
 
         Operations operations = (Operations) o;
         return id.equals(operations.id) &&
-                articleId.equals(operations.articleId) &&
+                articles.equals(operations.articles) &&
                 debit.equals(operations.debit) &&
                 credit.equals(operations.credit) &&
                 creditDate.equals(operations.creditDate) &&
-                balanceId.equals(operations.balanceId) &&
-                description.equals(operations.description);
+                balance.equals(operations.balance);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, articleId, debit, credit, creditDate, balanceId, description);
+        return Objects.hash(id, articles, debit, credit, creditDate, balance);
     }
 
     @Override
     public String toString() {
-        return id + " : " + articleId + " : " + debit + " : " +
-                credit +  " : " + creditDate + " : " + balanceId  + ". Description - " + description;
+        return id + " : " + debit + " : " +
+                credit +  " : " + creditDate;
     }
 
 

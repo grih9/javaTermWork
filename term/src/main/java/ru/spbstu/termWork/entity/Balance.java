@@ -7,28 +7,26 @@ import java.util.Objects;
 public class Balance {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
-    private Integer id;
+    @Column
+    private Long id;
 
-    @Column(name = "creditDate", nullable = false)
+    @Column(nullable = false)
     private String creditDate;
 
-    @Column(name = "debit")
+    @Column
     private Float debit;
 
-    @Column(name = "credit")
+    @Column
     private Float credit;
 
-    @Column(name = "amount")
+    @Column
     private Float amount;
-
-    private String description;
 
     public Balance() {
 
     }
 
-    public Balance(String creditDate, Float debit, Float credit, Float amount, String description) {
+    public Balance(String creditDate, Float debit, Float credit, Float amount) {
         if ((credit < 0) || (debit < 0)) {
             throw new IllegalArgumentException("Приход и/или расход не могут быть отрицательными.");
         }
@@ -37,15 +35,14 @@ public class Balance {
         this.debit = debit;
         this.credit = credit;
         this.amount = amount;
-        this.description = description;
     }
 
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -81,14 +78,6 @@ public class Balance {
         this.amount = amount;
     }
 
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -102,18 +91,17 @@ public class Balance {
                 creditDate.equals(balance.creditDate) &&
                 debit.equals(balance.debit) &&
                 credit.equals(balance.credit) &&
-                amount.equals(balance.amount) &&
-                description.equals(balance.description);
+                amount.equals(balance.amount);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, creditDate, debit, credit, amount, description);
+        return Objects.hash(id, creditDate, debit, credit, amount);
     }
 
     @Override
     public String toString() {
         return id + " : " + creditDate + " : " + debit + " : " +
-                credit +  " : " + amount + ". Description - " + description;
+                credit +  " : " + amount;
     }
 }
