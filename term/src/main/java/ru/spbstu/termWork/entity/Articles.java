@@ -58,12 +58,13 @@ public class Articles {
         }
         Articles articles = (Articles) o;
         return id.equals(articles.id) &&
-                name.equals(articles.name);
+                name.equals(articles.name) &&
+                description.equals(articles.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id, name, description);
     }
 
     @Override

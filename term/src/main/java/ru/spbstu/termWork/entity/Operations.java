@@ -27,6 +27,15 @@ public class Operations {
 
     private String description;
 
+    @ManyToOne
+    @JoinColumn(name = "articleId")
+    private Articles article;
+
+    @ManyToOne
+    @JoinColumn(name = "balanceId")
+    private Balance balance;
+
+
     public Operations() {
 
     }

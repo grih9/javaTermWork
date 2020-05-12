@@ -24,6 +24,23 @@ public class Balance {
 
     private String description;
 
+    public Balance() {
+
+    }
+
+    public Balance(String creditDate, Float debit, Float credit, Float amount, String description) {
+        if ((credit < 0) || (debit < 0)) {
+            throw new IllegalArgumentException("Приход и/или расход не могут быть отрицательными.");
+        }
+
+        this.creditDate = creditDate;
+        this.debit = debit;
+        this.credit = credit;
+        this.amount = amount;
+        this.description = description;
+    }
+
+
     public Integer getId() {
         return id;
     }
@@ -85,12 +102,13 @@ public class Balance {
                 creditDate.equals(balance.creditDate) &&
                 debit.equals(balance.debit) &&
                 credit.equals(balance.credit) &&
-                amount.equals(balance.amount);
+                amount.equals(balance.amount) &&
+                description.equals(balance.description);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, creditDate, debit, credit, amount);
+        return Objects.hash(id, creditDate, debit, credit, amount, description);
     }
 
     @Override
