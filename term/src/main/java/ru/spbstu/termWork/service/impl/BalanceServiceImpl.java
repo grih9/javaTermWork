@@ -2,6 +2,7 @@ package ru.spbstu.termWork.service.impl;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import ru.spbstu.termWork.entity.Balance;
 import ru.spbstu.termWork.repository.ArticlesRepository;
 import ru.spbstu.termWork.repository.BalanceRepository;
@@ -9,6 +10,7 @@ import ru.spbstu.termWork.service.BalanceService;
 
 import java.util.List;
 
+@Service
 public class BalanceServiceImpl implements BalanceService {
 
     private final BalanceRepository balanceRepository;
@@ -39,7 +41,7 @@ public class BalanceServiceImpl implements BalanceService {
     }
 
     @Override
-    public List<Balance> articlesList() {
+    public List<Balance> balanceList() {
         return null;
     }
 }

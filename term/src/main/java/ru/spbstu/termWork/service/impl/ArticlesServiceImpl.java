@@ -3,6 +3,7 @@ package ru.spbstu.termWork.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.spbstu.termWork.entity.Articles;
+import ru.spbstu.termWork.exception.ArticleNotFoundException;
 import ru.spbstu.termWork.repository.ArticlesRepository;
 import ru.spbstu.termWork.service.ArticlesService;
 
@@ -29,10 +30,10 @@ public class ArticlesServiceImpl implements ArticlesService {
         articlesRepository.deleteById(id);
     }
 
-//    @Override
-//    public Articles getByName(String name) {
-//        return articlesRepository.findByName(name);
-//    }
+    @Override
+    public Articles getByName(String name) {
+        return articlesRepository.findByName(name);
+    }
 
     @Override
     public Articles findArticles(Long id) {
@@ -41,7 +42,7 @@ public class ArticlesServiceImpl implements ArticlesService {
         if (optionalArticles.isPresent()) {
             return optionalArticles.get();
         } else {
-            throw new IllegalArgumentException();
+            throw new ArticleNotFoundException("Article is not found by id");
         }
     }
 
