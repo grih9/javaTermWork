@@ -16,7 +16,7 @@ public class Articles {
     public Articles() {
     }
 
-    public Articles(String name, String description) {
+    public Articles(String name) {
         this.name = name;
     }
 

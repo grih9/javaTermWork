@@ -19,17 +19,17 @@ public class BudgetAutomatization {
     }
 
 
-//    @Bean
-//    public CommandLineRunner test(final ArticlesRepository repository) {
-//        return args -> {
-//            repository.save(new Articles("Article 1", "descr for 1st article"));
-//            repository.save(new Articles("Article 2", "descr for 2nd article"));
-//
-//            for (Articles article : repository.findAll()) {
-//                log.info("The article is: " + article.toString());
-//
-//            }
-//        };
-//    }
+    @Bean
+    public CommandLineRunner test(final ArticlesRepository repository) {
+        return args -> {
+            repository.save(new Articles("Article 1"));
+            repository.save(new Articles("Article 2"));
+
+            for (Articles article : repository.findAll()) {
+                log.info("The article is: " + article.toString());
+
+            }
+        };
+    }
 
 }
