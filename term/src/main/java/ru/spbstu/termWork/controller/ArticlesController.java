@@ -18,7 +18,7 @@ public class ArticlesController {
 
     private ArticlesService articlesService;
 
-    @PostMapping(value = "/addArticle", consumes = "types/json", produces = "types/json")
+    @PostMapping(value = "/addArticle", consumes = "application/json", produces = "application/json")
     public Articles addArticle(@RequestBody Articles newArticle) {
         return articlesService.addArticles(newArticle);
     }
