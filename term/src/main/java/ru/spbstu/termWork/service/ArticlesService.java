@@ -1,6 +1,5 @@
 package ru.spbstu.termWork.service;
 
-import org.springframework.stereotype.Service;
 import ru.spbstu.termWork.entity.Articles;
 
 import java.util.List;

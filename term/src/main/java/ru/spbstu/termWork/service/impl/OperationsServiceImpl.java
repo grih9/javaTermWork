@@ -1,9 +1,10 @@
-package ru.spbstu.termWork.service.impl;
+package ru.spbstu.termWork.service.Impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import ru.spbstu.termWork.entity.Articles;
 import ru.spbstu.termWork.entity.Operations;
+import ru.spbstu.termWork.exception.OperationNotFoundException;
 import ru.spbstu.termWork.repository.OperationsRepository;
 import ru.spbstu.termWork.service.OperationsService;
 
@@ -27,7 +28,11 @@ public class OperationsServiceImpl implements OperationsService {
 
     @Override
     public void delete(Long id) {
-        operationsRepository.deleteById(id);
+        try {
+            operationsRepository.deleteById(id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new OperationNotFoundException("Can't delete. Operation with this id is not found");
+        }
     }
 
     @Override
@@ -37,7 +42,7 @@ public class OperationsServiceImpl implements OperationsService {
         if (optionalArticles.isPresent()) {
             return optionalArticles.get();
         } else {
-            throw new IllegalArgumentException();
+            throw new OperationNotFoundException("Operation is not found by id");
         }
     }
 
@@ -48,6 +53,6 @@ public class OperationsServiceImpl implements OperationsService {
 
     @Override
     public List<Operations> operationsList() {
-        return null;
+        return (List<Operations>) operationsRepository.findAll();
     }
 }
