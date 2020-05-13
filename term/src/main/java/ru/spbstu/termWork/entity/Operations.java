@@ -1,4 +1,3 @@
-
 package ru.spbstu.termWork.entity;
 
 import javax.persistence.*;

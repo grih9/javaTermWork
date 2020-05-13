@@ -9,7 +9,6 @@ import ru.spbstu.termWork.entity.Articles;
 import ru.spbstu.termWork.exception.ArticleNotFoundException;
 import ru.spbstu.termWork.service.ArticlesService;
 import javax.validation.Valid;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -23,7 +22,7 @@ public class ArticlesController {
         return new ResponseEntity<>(articlesService.addArticles(newArticle), HttpStatus.CREATED);
     }
 
-    @PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
+    @PutMapping(value = "/id/{id}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Articles> updateById(@PathVariable Long id, @Valid @RequestBody Articles article) {
         if (!id.equals(article.getId())) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -31,13 +30,13 @@ public class ArticlesController {
         return new ResponseEntity<>(articlesService.update(article), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Articles> deletebyId(@PathVariable Long id) {
+    @DeleteMapping("/id/{id}")
+    public ResponseEntity deletebyId(@PathVariable Long id) {
         try {
             articlesService.delete(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity(HttpStatus.OK);
         } catch (ArticleNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
 
@@ -47,7 +46,7 @@ public class ArticlesController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<Articles> getArticleById(@PathVariable("id") Long id) {
         try {
             return new ResponseEntity<>(articlesService.findArticles(id), HttpStatus.OK);
@@ -65,7 +64,7 @@ public class ArticlesController {
         }
     }
 
-    @PutMapping(value = "name/{name}", consumes = "application/json", produces = "application/json")
+    @PutMapping(value = "/name/{name}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Articles> updateByName(@PathVariable String name, @Valid @RequestBody Articles article) {
         if (!articlesService.findArticles(article.getId()).getName().equals(name)) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -73,7 +72,7 @@ public class ArticlesController {
         return new ResponseEntity<>(articlesService.update(article), HttpStatus.OK);
     }
 
-    @DeleteMapping("name/{name}")
+    @DeleteMapping("/name/{name}")
     public ResponseEntity<Articles> deletebyName(@PathVariable String name) {
         try {
             articlesService.delete(articlesService.getByName(name).getId());

@@ -30,7 +30,7 @@ public class BalanceController {
     }
 
 
-    @PutMapping(value = "/{id}", consumes = "application/json", produces = "application/json")
+    @PutMapping(value = "/id/{id}", consumes = "application/json", produces = "application/json")
     public ResponseEntity<Balance> addBalance(@PathVariable Long id, @Valid @RequestBody Balance balance) {
         if (!id.equals(balance.getId())) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -38,17 +38,17 @@ public class BalanceController {
         return new ResponseEntity<>(balanceService.update(balance), HttpStatus.OK);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Balance> delete(@PathVariable Long id) {
+    @DeleteMapping("/id/{id}")
+    public ResponseEntity delete(@PathVariable Long id) {
         try {
             balanceService.delete(id);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity(HttpStatus.OK);
         } catch (BalanceNotFoundException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity(HttpStatus.NOT_FOUND);
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<Balance> getBalance(@PathVariable("id") Long id) {
         try {
             return new ResponseEntity<>(balanceService.findBalance(id), HttpStatus.OK);
