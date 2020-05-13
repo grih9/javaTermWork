@@ -1,9 +1,13 @@
+
 package ru.spbstu.termWork.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
+@Table(name = "operations")
 public class Operations {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -20,27 +24,19 @@ public class Operations {
     @Column
     private Float credit;
 
-    @Column
-    private String creditDate;
+    @Column(name = "create_date", length = 3)
+    @NotBlank(message = "Date can't be blank")
+    private Timestamp createDate;
 
     @ManyToOne(targetEntity = Balance.class)
     @JoinColumn(name = "balance_id", nullable = false)
     private Balance balance;
 
-//    @ManyToOne
-//    @JoinColumn(name = "articleId")
-//    private Articles article;
-//
-//    @ManyToOne
-//    @JoinColumn(name = "balanceId")
-//    private Balance balance;
-
-
     public Operations() {
 
     }
 
-    public Operations(Articles articles, Float debit, Float credit, String creditDate, Balance balance) {
+    public Operations(Articles articles, Float debit, Float credit, Timestamp createDate, Balance balance) {
         if ((credit < 0) || (debit < 0)) {
             throw new IllegalArgumentException("Приход и/или расход не могут быть отрицательными.");
         }
@@ -48,7 +44,7 @@ public class Operations {
         this.articles = articles;
         this.debit = debit;
         this.credit = credit;
-        this.creditDate = creditDate;
+        this.createDate = createDate;
         this.balance = balance;
     }
 
@@ -84,21 +80,14 @@ public class Operations {
         this.credit = credit;
     }
 
-    public String getCreditDate() {
-        return creditDate;
+    public Timestamp getCreateDate() {
+        return createDate;
     }
 
-    public void setCreditDate(String creditDate) {
-        this.creditDate = creditDate;
+    public void setCreateDate(Timestamp createDate) {
+        this.createDate = createDate;
     }
 
-    public Balance getBalance() {
-        return balance;
-    }
-
-    public void setBalance(Balance balanceId) {
-        this.balance = balance;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -115,20 +104,18 @@ public class Operations {
                 articles.equals(operations.articles) &&
                 debit.equals(operations.debit) &&
                 credit.equals(operations.credit) &&
-                creditDate.equals(operations.creditDate) &&
+                createDate.equals(operations.createDate) &&
                 balance.equals(operations.balance);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, articles, debit, credit, creditDate, balance);
+        return Objects.hash(id, articles, debit, credit, createDate, balance);
     }
 
     @Override
     public String toString() {
         return id + " : " + debit + " : " +
-                credit +  " : " + creditDate;
+                credit +  " : " + createDate;
     }
-
-
 }

@@ -1,16 +1,21 @@
 package ru.spbstu.termWork.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Objects;
 
 @Entity
+@Table(name = "articles")
 public class Articles {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Long id;
 
-    @Column(nullable = false)
+    @Column(length = 50)
+    @NotNull(message = "Name can't be blank")
+    @Size(max = 50, message = "Name's max size is 50")
     private String name;
 
     public Articles() {

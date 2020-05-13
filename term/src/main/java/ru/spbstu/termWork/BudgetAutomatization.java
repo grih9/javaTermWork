@@ -18,7 +18,6 @@ public class BudgetAutomatization {
         SpringApplication.run(BudgetAutomatization.class, args);
     }
 
-
     @Bean
     public CommandLineRunner test(final ArticlesRepository repository) {
         return args -> {

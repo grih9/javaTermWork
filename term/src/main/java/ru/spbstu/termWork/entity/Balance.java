@@ -1,17 +1,22 @@
 package ru.spbstu.termWork.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import java.sql.Time;
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
+@Table(name = "balance")
 public class Balance {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column
     private Long id;
 
-    @Column(nullable = false)
-    private String creditDate;
+    @Column(name = "create_date", length = 3)
+    @NotBlank(message = "Date can't be blank")
+    private Timestamp createDate;
 
     @Column
     private Float debit;
@@ -26,12 +31,12 @@ public class Balance {
 
     }
 
-    public Balance(String creditDate, Float debit, Float credit, Float amount) {
+    public Balance(Timestamp createDate, Float debit, Float credit, Float amount) {
         if ((credit < 0) || (debit < 0)) {
             throw new IllegalArgumentException("Приход и/или расход не могут быть отрицательными.");
         }
 
-        this.creditDate = creditDate;
+        this.createDate = createDate;
         this.debit = debit;
         this.credit = credit;
         this.amount = amount;
@@ -46,12 +51,12 @@ public class Balance {
         this.id = id;
     }
 
-    public String getCreditDate() {
-        return creditDate;
+    public Timestamp getCreateDate() {
+        return createDate;
     }
 
-    public void setCreditDate(String creditDate) {
-        this.creditDate = creditDate;
+    public void setCreateDate(Timestamp createDate) {
+        this.createDate = createDate;
     }
 
     public Float getDebit() {
@@ -88,7 +93,7 @@ public class Balance {
         }
         Balance balance = (Balance) o;
         return id.equals(balance.id) &&
-                creditDate.equals(balance.creditDate) &&
+                createDate.equals(balance.createDate) &&
                 debit.equals(balance.debit) &&
                 credit.equals(balance.credit) &&
                 amount.equals(balance.amount);
@@ -96,12 +101,12 @@ public class Balance {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, creditDate, debit, credit, amount);
+        return Objects.hash(id, createDate, debit, credit, amount);
     }
 
     @Override
     public String toString() {
-        return id + " : " + creditDate + " : " + debit + " : " +
+        return id + " : " + createDate + " : " + debit + " : " +
                 credit +  " : " + amount;
     }
 }
