@@ -11,7 +11,7 @@ public class BudgetAutomatization {
     public static void main(String[] args) {
         SpringApplication.run(BudgetAutomatization.class, args);
     }
-
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();

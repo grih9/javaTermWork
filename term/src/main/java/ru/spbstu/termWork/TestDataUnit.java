@@ -28,7 +28,6 @@ public class TestDataUnit implements CommandLineRunner {
         articlesRepository.save(new Articles("Article1"));
         articlesRepository.save(new Articles("Article2"));
 
-
         userRepository.save(new User("user", passwordEncoder.encode("pwd"),
                 Collections.singletonList("ROLE_USER")));
         userRepository.save(new User("admin", passwordEncoder.encode("apwd"),

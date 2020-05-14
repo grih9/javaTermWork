@@ -33,8 +33,9 @@ public class AuthController {
     public ResponseEntity signIn(@RequestBody AuthRequest request) {
         try {
             String name = request.getUserName();
+            String password = request.getPassword();
             String token = jwtTokenProvider.createToken(
-                    name,
+                    name, password,
                     userRepository.findUserByUserName(name)
                             .orElseThrow(() -> new UsernameNotFoundException("User is not found")).getRoles());
 

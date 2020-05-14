@@ -9,6 +9,7 @@ import ru.spbstu.termWork.repository.UserRepository;
 
 @Service
 public class CustomUserDetailService implements UserDetailsService {
+
     private final UserRepository userRepository;
 
     @Autowired
