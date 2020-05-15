@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>Table</title>
-
+    <link rel="stylesheet" href="css/app.css">
 </head>
 <body>
 <p></p>
@@ -29,6 +29,19 @@
 <!--    </tr>-->
 
 </table>
-<input value="Log Out" align="center" type="button" onclick="location.href='index.html'" />
+<p align="center">
+    <select>
+        <option>Search by id</option>
+        <option>Search by name</option>
+    </select>
+    <input class="textfield" type="text">
+    <input value="Search" type="button" onclick="location.href='success.html'"/>
+</p>
+<hr>
+<p align="center">
+    <input value="Back" type="button" onclick="history.back();"/>
+    <input value="Info" type="button" onclick="location.href='index.html'"/>
+    <input value="Log Out" type="button" onclick="location.href='index.html'"/>
+</p>
 </body>
 </html>
