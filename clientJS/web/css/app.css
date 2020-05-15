@@ -102,7 +102,7 @@ header {
     align-items: center;
     padding: 0 1rem;
     color: white;
-    background-color: #f0db4f;
+    background-color: #d3f5a5;
     text-align: center;
     text-transform: uppercase;
 }
@@ -112,8 +112,6 @@ header h1 {
     color: #323330;
     margin: 1rem auto;
 }
-
-
 
 /* Todo Item */
 .todo-item {
@@ -166,8 +164,6 @@ header h1 {
     opacity: 1;
 }
 
-
-
 /* Todo form */
 
 #todo-form {
@@ -184,7 +180,7 @@ header h1 {
 }
 
 #todo-form input:focus {
-    border: 1px solid #f0db4f;
+    border: 1px solid #e5f04f;
 }
 
 #todo-form button {

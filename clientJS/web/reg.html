@@ -12,20 +12,19 @@
     <header>
         <h1>Registration</h1>
     </header>
-
+    <p align="center">
+        <input  class="textfield" type="text" placeholder="username">
+        <input  class="textfield" type="text" PLACEHOLDER="password">
+        <input  class="textfield" type="text" PLACEHOLDER="confirm passwod">
+    </p>
         <ul id="todo-list">
             <li class="todo-item">
-                <input class="textfield" type="text">
-                <textarea class="edit">username</textarea>
-                <input class="textfield" type="text">
-                <textarea class="delete">password</textarea>
-                <input class="checkbox" type="checkbox">
+                <input class="checkbox" id="check_checkbox" type="checkbox">
                 <label class="title">Подтверждаю правильность данных</label>
-                <input class="textfield" type="text">
             </li>
         </ul>
-
     <form id="todo-form">
+        <input value="Back" type="button" onclick="history.back();"/>
         <input value="Confirm" type="button" onclick="location.href='success.html'" />
     </form>
 </main>
