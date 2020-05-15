@@ -5,6 +5,15 @@ body {
     margin: 0;
 }
 
+textarea{
+    overflow: auto;
+    text-align-all: center;
+    align-content: normal;
+    resize: none;
+    width: 250px;
+    height: 40px;
+}
+
 ul {
     list-style: none;
     margin: 0;
