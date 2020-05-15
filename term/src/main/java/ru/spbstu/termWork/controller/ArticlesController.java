@@ -86,5 +86,4 @@ public class ArticlesController {
     public void setArticlesService(ArticlesService articlesService) {
         this.articlesService = articlesService;
     }
-
 }

@@ -1,20 +1,18 @@
 package ru.spbstu.termWork.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+import ru.spbstu.termWork.entity.User;
 import ru.spbstu.termWork.repository.UserRepository;
 import ru.spbstu.termWork.security.jwt.JwtTokenProvider;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -29,8 +27,16 @@ public class AuthController {
     @Autowired
     UserRepository userRepository;
 
-    @PostMapping("/signIn")
-    public ResponseEntity signIn(@RequestBody AuthRequest request) {
+//    @GetMapping("/signIn")
+//    public ModelAndView newCustomerForm(ModelAndView model) {
+//        User user = new User();
+//        model.addObject("user", user);
+//        model.setView("login_successfull");
+//        return "login_successfull";
+//    }
+
+    @PostMapping(value = "/signIn", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity signIn(@RequestBody AuthRequest request, Model model) {
         try {
             String name = request.getUserName();
             String password = request.getPassword();
@@ -39,9 +45,8 @@ public class AuthController {
                     userRepository.findUserByUserName(name)
                             .orElseThrow(() -> new UsernameNotFoundException("User is not found")).getRoles());
 
-            Map<Object, Object> model = new HashMap<>();
-            model.put("userName", name);
-            model.put("token", token);
+            model.addAttribute("userName", name);
+            model.addAttribute("token", token);
 
             return ResponseEntity.ok(model);
         } catch (AuthenticationException e) {
