@@ -40,7 +40,7 @@ public class ArticlesController {
         }
     }
 
-    @GetMapping("/all")
+    @GetMapping(value = "/all")
     public ResponseEntity<List<Articles>> getAllArticles() {
         List<Articles> list = articlesService.articlesList();
         return new ResponseEntity<>(list, HttpStatus.OK);

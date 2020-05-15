@@ -14,6 +14,9 @@ import ru.spbstu.termWork.entity.User;
 import ru.spbstu.termWork.repository.UserRepository;
 import ru.spbstu.termWork.security.jwt.JwtTokenProvider;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -35,8 +38,8 @@ public class AuthController {
 //        return "login_successfull";
 //    }
 
-    @PostMapping(value = "/signIn", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity signIn(@RequestBody AuthRequest request, Model model) {
+    @PostMapping(value = "/signIn", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity signIn(@RequestBody AuthRequest request) {
         try {
             String name = request.getUserName();
             String password = request.getPassword();
@@ -45,8 +48,9 @@ public class AuthController {
                     userRepository.findUserByUserName(name)
                             .orElseThrow(() -> new UsernameNotFoundException("User is not found")).getRoles());
 
-            model.addAttribute("userName", name);
-            model.addAttribute("token", token);
+            Map<Object, Object> model = new HashMap<>();
+            model.put("userName", name);
+            model.put("token", token);
 
             return ResponseEntity.ok(model);
         } catch (AuthenticationException e) {
