@@ -1,10 +1,25 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/html" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>Title</title>
     <link rel="stylesheet" href="css/app.css">
+    <script language="JavaScript">
+        function unAuthorize() {
+            localStorage.clear();
+            window.location.href = "./index.html";
+        }
+        function isLog() {
+            if (localStorage.getItem("Authentication") !== null) {
+                alert("You have already logged in");
+                window.location.href = "./table.html"
+            } else {
+                localStorage.clear();
+                window.location.href = "./login.html"
+            }
+        }
+    </script>
 </head>
 <body>
 <main id="app">
@@ -31,7 +46,7 @@
     <p></p>
     <form id="todo-form">
         <input value="Back" type="button" onclick="history.back();"/>
-        <input value="Log in" type="button" onclick="location.href='login.html'"/>
+        <input value="Log in" type="button" onclick=isLog() />
         <input value="Sign up" type="button" onclick="location.href='reg.html'"/>
     </form>
 </main>

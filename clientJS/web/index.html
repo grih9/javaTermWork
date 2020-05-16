@@ -1,28 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/html" lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>Budget Automatization</title>
-    <script language="JavaScript">
-        document.cookie = encodeURIComponent("Authentication") + "=" + encodeURIComponent("Bearer :0 ");
-    </script>
     <link rel="stylesheet" href="css/app.css">
+    <script language="JavaScript">
+        function clickHandler() {
+            if (localStorage.getItem("Authentication") !== null) {
+                window.location.href = "./table.html"
+            } else {
+                localStorage.clear();
+                window.location.href = "./tableview.html"
+            }
+        }
+        function isLog() {
+            if (localStorage.getItem("Authentication") !== null) {
+                alert("You have already logged in");
+                window.location.href = "./table.html"
+            } else {
+                localStorage.clear();
+                window.location.href = "./login.html"
+            }
+        }
+    </script>
 </head>
 <body>
-<script>
-    localStorage.clear();
-</script>
+
 <main id="app">
     <header>
         <h1>Budget Automatization</h1>
     </header>
     <p align="center">
         <strong>Welcome to data base of budget automatization.</strong> Please log in or sign up to control the table
-        or <a href="tableview.html">click here</a>  to check tables without editing.
+        or <u><font color = "blue"><a onclick=clickHandler()>click here</a></font></u> to open tables.
     </p>
     <form id="todo-form">
-        <input value="Log in" type="button" onclick="location.href='login.html'" />
+        <input value="Log in" type="button" onclick=isLog() />
         <input value="Sign up" type="button" onclick="location.href='reg.html'" />
     </form>
 </main>

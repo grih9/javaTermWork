@@ -1,10 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns="http://www.w3.org/1999/html" lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>Table</title>
     <link rel="stylesheet" href="css/app.css">
+    <script language="JavaScript">
+        function unAuthorize() {
+            localStorage.clear();
+            window.location.href = "./index.html";
+        }
+    </script>
 </head>
 <body>
 <main id="app">
@@ -41,7 +47,7 @@
     <form id="todo-form">
         <input value="Back" type="button" onclick="history.back();"/>
         <input value="Info" type="button" onclick="location.href='index.html'"/>
-        <input value="Log Out" type="button" onclick="location.href='index.html'"/>
+        <input value="Log Out" type="button" onclick=unAuthorize() />
     </form>
 </main>
 </body>

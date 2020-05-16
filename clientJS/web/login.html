@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html">
+<html xmlns="http://www.w3.org/1999/html" lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>Log In</title>
     <script language="JavaScript">
-        function  function1() {
+        function function1() {
               var username = document.getElementById("userName").value;
               var pass = document.getElementById("password").value;
               if ((username == '') || (pass == '')) {
@@ -15,7 +15,7 @@
                       userName : username,
                       password : pass
                   }
-                  let response = fetch("http://localhost:8080/auth/signIn", {
+                  fetch("http://localhost:8080/auth/signIn", {
                       method: 'POST',
                       headers:
                           {
@@ -25,7 +25,7 @@
                   })
                   .then(response => {
                       if (response.status >= 400) {
-                          console.log("Проверьте правильность данных");
+                          console.log("Check entered data please");
                           return Promise.reject();
                       }
                       return response.json();
@@ -33,33 +33,8 @@
                       .then(j => JSON.stringify(j))
                       .then(data => JSON.parse(data))
                       .then(obj => localStorage.setItem("Authentication", obj["token"]))
-                      .then( () => window.location.href = "./success.html" )
-                      .catch(() => alert("Проверьте правильность данных"));
-                  // if (response.ok) {
-                  //     let json = response.json();
-                  //     var data = JSON.stringify(json);
-                  //     var object = JSON.parse(data);
-                  //     alert(object["token"]);
-                  // } else {
-                  //     alert("HTTP Error:" + response.status)
-                  // }
-
-                  // var XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest;
-                  // var xhr = new XHR();
-                  //
-                  // xhr.open('GET', 'http://localhost:8080/articles/all', false);
-                  //
-                  // xhr.onload = function(data) {
-                  //     alert('good');
-                  //     alert(JSON.parse(this.responseText) );
-                  // }
-                  //
-                  // xhr.onerror = function(data) {
-                  //     alert('error' + this.status );
-                  //     alert(data);
-                  // }
-                  // xhr.send('fname=Henry&lname=Ford');
-                  // alert("ok");
+                      .then(() => window.location.href = "./success.html" )
+                      .catch(() => alert("Check entered data please"));
               }
           }
     </script>
