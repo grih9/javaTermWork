@@ -8,19 +8,19 @@
     <script language="JavaScript">
         function clickHandler() {
             if (localStorage.getItem("Authentication") !== null) {
-                window.location.href = "./table.html"
+                window.location.href = "./table.html";
             } else {
                 localStorage.clear();
-                window.location.href = "./tableview.html"
+                window.location.href = "./tableview.html";
             }
         }
         function isLog() {
             if (localStorage.getItem("Authentication") !== null) {
                 alert("You have already logged in");
-                window.location.href = "./table.html"
+                window.location.href = "./table.html";
             } else {
                 localStorage.clear();
-                window.location.href = "./login.html"
+                window.location.href = "./login.html";
             }
         }
     </script>
