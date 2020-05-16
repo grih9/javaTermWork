@@ -8,11 +8,13 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import ru.spbstu.termWork.security.jwt.JwtSecurityConfigurer;
 import ru.spbstu.termWork.security.jwt.JwtTokenProvider;
 
 @Configuration
-public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
+public class SpringSecurityConfig extends WebSecurityConfigurerAdapter implements WebMvcConfigurer {
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -46,6 +48,13 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtSecurityConfigurer(jwtTokenProvider));
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("http://localhost:63342")
+                .allowedMethods("*");
     }
 
 }

@@ -4,10 +4,15 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>Budget Automatization</title>
+    <script language="JavaScript">
+        document.cookie = encodeURIComponent("Authentication") + "=" + encodeURIComponent("Bearer :0 ");
+    </script>
     <link rel="stylesheet" href="css/app.css">
 </head>
-
 <body>
+<script>
+    localStorage.clear();
+</script>
 <main id="app">
     <header>
         <h1>Budget Automatization</h1>
@@ -21,6 +26,5 @@
         <input value="Sign up" type="button" onclick="location.href='reg.html'" />
     </form>
 </main>
-<script src="js/app.js"></script>
 </body>
 </html>

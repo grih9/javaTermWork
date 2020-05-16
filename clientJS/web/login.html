@@ -1,27 +1,85 @@
 <!DOCTYPE html>
-<html>
+<html xmlns="http://www.w3.org/1999/html">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>Log In</title>
+    <script language="JavaScript">
+        function  function1() {
+              var username = document.getElementById("userName").value;
+              var pass = document.getElementById("password").value;
+              if ((username == '') || (pass == '')) {
+                  alert("Enter data please");
+              } else {
+                  let user = {
+                      userName : username,
+                      password : pass
+                  }
+                  let response = fetch("http://localhost:8080/auth/signIn", {
+                      method: 'POST',
+                      headers:
+                          {
+                              'Content-Type': 'application/json'
+                          },
+                      body: JSON.stringify(user)
+                  })
+                  .then(response => {
+                      if (response.status >= 400) {
+                          console.log("Проверьте правильность данных");
+                          return Promise.reject();
+                      }
+                      return response.json();
+                  })
+                      .then(j => JSON.stringify(j))
+                      .then(data => JSON.parse(data))
+                      .then(obj => localStorage.setItem("Authentication", obj["token"]))
+                      .then( () => window.location.href = "./success.html" )
+                      .catch(() => alert("Проверьте правильность данных"));
+                  // if (response.ok) {
+                  //     let json = response.json();
+                  //     var data = JSON.stringify(json);
+                  //     var object = JSON.parse(data);
+                  //     alert(object["token"]);
+                  // } else {
+                  //     alert("HTTP Error:" + response.status)
+                  // }
+
+                  // var XHR = ("onload" in new XMLHttpRequest()) ? XMLHttpRequest : XDomainRequest;
+                  // var xhr = new XHR();
+                  //
+                  // xhr.open('GET', 'http://localhost:8080/articles/all', false);
+                  //
+                  // xhr.onload = function(data) {
+                  //     alert('good');
+                  //     alert(JSON.parse(this.responseText) );
+                  // }
+                  //
+                  // xhr.onerror = function(data) {
+                  //     alert('error' + this.status );
+                  //     alert(data);
+                  // }
+                  // xhr.send('fname=Henry&lname=Ford');
+                  // alert("ok");
+              }
+          }
+    </script>
     <link rel="stylesheet" href="css/app.css">
 </head>
 
-<body>
+<body id="login">
 <main id="app">
     <header>
         <h1>Log in</h1>
     </header>
     <p align="center">
-        <input  class="textfield" type="text" placeholder="username">
-        <input  class="textfield" type="text" PLACEHOLDER="password">
+        <input id="userName" class="textfield" type="text" placeholder="username">
+        <input id="password" class="textfield" type="text" placeholder="password">
     </p>
 
     <form id="todo-form">
         <input value="Back" type="button" onclick="history.back();"/>
-        <input value="Confirm" type="button" onclick="location.href='success.html'" />
+        <input id="login_confirm" value="Confirm" type="button" onclick=function1() />
     </form>
 </main>
-<script src="js/app.js"></script>
 </body>
 </html>
