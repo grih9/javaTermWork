@@ -7,15 +7,15 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "operations")
-public class Operations {
+public class Operation {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column
     private Long id;
 
-    @ManyToOne(targetEntity = Articles.class)
+    @ManyToOne(targetEntity = Article.class)
     @JoinColumn(name = "article_id", nullable = false)
-    private Articles articles;
+    private Article article;
 
     @Column
     private Float debit;
@@ -31,16 +31,16 @@ public class Operations {
     @JoinColumn(name = "balance_id", nullable = false)
     private Balance balance;
 
-    public Operations() {
+    public Operation() {
 
     }
 
-    public Operations(Articles articles, Float debit, Float credit, Timestamp createDate, Balance balance) {
+    public Operation(Article article, Float debit, Float credit, Timestamp createDate, Balance balance) {
         if ((credit < 0) || (debit < 0)) {
             throw new IllegalArgumentException("Приход и/или расход не могут быть отрицательными.");
         }
 
-        this.articles = articles;
+        this.article = article;
         this.debit = debit;
         this.credit = credit;
         this.createDate = createDate;
@@ -55,12 +55,12 @@ public class Operations {
         this.id = id;
     }
 
-    public Articles getArticles() {
-        return articles;
+    public Article getArticle() {
+        return article;
     }
 
-    public void setArticles(Articles articles) {
-        this.articles = articles;
+    public void setArticle(Article article) {
+        this.article = article;
     }
 
     public Float getDebit() {
@@ -98,18 +98,18 @@ public class Operations {
             return false;
         }
 
-        Operations operations = (Operations) o;
-        return id.equals(operations.id) &&
-                articles.equals(operations.articles) &&
-                debit.equals(operations.debit) &&
-                credit.equals(operations.credit) &&
-                createDate.equals(operations.createDate) &&
-                balance.equals(operations.balance);
+        Operation operation = (Operation) o;
+        return id.equals(operation.id) &&
+                article.equals(operation.article) &&
+                debit.equals(operation.debit) &&
+                credit.equals(operation.credit) &&
+                createDate.equals(operation.createDate) &&
+                balance.equals(operation.balance);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, articles, debit, credit, createDate, balance);
+        return Objects.hash(id, article, debit, credit, createDate, balance);
     }
 
     @Override

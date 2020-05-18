@@ -6,8 +6,42 @@
     <title>Budget Automatization</title>
     <link rel="stylesheet" href="css/app.css">
     <script language="JavaScript">
-        function  function1() {
-            alert(localStorage.getItem('Authentication'));
+        function submitReg() {
+            var username = document.getElementById("userName").value;
+            var pass = document.getElementById("password").value;
+            var passConfirm = document.getElementById("confirmPassword").value;
+            var checkBoxValue = document.getElementById("checkBox").checked;
+            if((username == '') || (pass == '') || (passConfirm == '')) {
+                alert("Enter data please");
+            } else if (!checkBoxValue) {
+                alert("Please confirm that entered data is correct");
+            } else if(pass !== passConfirm) {
+                alert("Passwords don't match");
+            } else {
+                fetch("http://localhost:8080/auth/signUp", {
+                    method: "POST",
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        userName: username,
+                        password: pass
+                    })
+                })
+                    .then( (response) => {
+                        if(response.status >= 400){
+                            console.log("User with this nickname exists");
+                            return Promise.reject();
+                        }
+                        return response.json();
+                    }).then( () => alert("New user created successfully. Now please log in"))
+                    .then( () => window.location.href = "./login.html" )
+                    .catch( () => alert("User with this nickname exists"));
+            }
+        }
+        function clickCheckBox() {
+            document.getElementById("checkBox").checked = !document.getElementById("checkBox").checked;
+
         }
     </script>
 </head>
@@ -17,19 +51,19 @@
         <h1>Registration</h1>
     </header>
     <p align="center">
-        <input  class="textfield" type="text" placeholder="username">
-        <input  class="textfield" type="text" PLACEHOLDER="password">
-        <input  class="textfield" type="text" PLACEHOLDER="confirm passwod">
+        <input id="userName"  class="textfield" type="text" placeholder="username">
+        <input id="password"  class="textfield" type="text" PLACEHOLDER="password">
+        <input id="confirmPassword"  class="textfield" type="text" PLACEHOLDER="confirm password">
     </p>
         <ul id="todo-list">
             <li class="todo-item">
-                <input class="checkbox" id="check_checkbox" type="checkbox">
-                <label class="title">Подтверждаю правильность данных</label>
+                <input id="checkBox" class="checkbox"  type="checkbox">
+                <label onclick="clickCheckBox()" class="title">I confirm that the entered data is correct</label>
             </li>
         </ul>
     <form id="todo-form">
         <input value="Back" type="button" onclick="history.back();"/>
-        <input value="Confirm" type="button" onclick="location.href='success.html'" />
+        <input value="Confirm" type="button" onclick="submitReg()" />
     </form>
 </main>
 </body>

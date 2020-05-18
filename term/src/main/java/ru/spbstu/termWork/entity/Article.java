@@ -7,21 +7,21 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "articles")
-public class Articles {
+public class Article {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Long id;
 
-    @Column(length = 50)
+    @Column(length = 50, unique = true)
     @NotNull(message = "Name can't be blank")
     @Size(max = 50, message = "Name's max size is 50")
     private String name;
 
-    public Articles() {
+    public Article() {
     }
 
-    public Articles(String name) {
+    public Article(String name) {
         this.name = name;
     }
 
@@ -49,9 +49,9 @@ public class Articles {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Articles articles = (Articles) o;
-        return id.equals(articles.id) &&
-                name.equals(articles.name);
+        Article article = (Article) o;
+        return id.equals(article.id) &&
+                name.equals(article.name);
     }
 
     @Override
