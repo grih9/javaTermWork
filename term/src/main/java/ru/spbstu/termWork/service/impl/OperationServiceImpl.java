@@ -3,8 +3,12 @@ package ru.spbstu.termWork.service.Impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import ru.spbstu.termWork.entity.Article;
+import ru.spbstu.termWork.entity.Balance;
 import ru.spbstu.termWork.entity.Operation;
 import ru.spbstu.termWork.exception.OperationNotFoundException;
+import ru.spbstu.termWork.repository.ArticleRepository;
+import ru.spbstu.termWork.repository.BalanceRepository;
 import ru.spbstu.termWork.repository.OperationRepository;
 import ru.spbstu.termWork.service.OperationService;
 
@@ -15,6 +19,12 @@ import java.util.Optional;
 public class OperationServiceImpl implements OperationService {
 
     private final OperationRepository operationRepository;
+
+    @Autowired
+    private BalanceRepository balanceRepository;
+
+    @Autowired
+    private ArticleRepository articleRepository;
 
     @Autowired
     public OperationServiceImpl(OperationRepository operationRepository) {
@@ -54,5 +64,25 @@ public class OperationServiceImpl implements OperationService {
     @Override
     public List<Operation> operationsList() {
         return (List<Operation>) operationRepository.findAll();
+    }
+
+    @Override
+    public List<Operation> findOperationByBalance(Balance balance) {
+        List<Operation> operations = operationRepository.findOperationByBalance(balance);
+        if (operations.size() > 0) {
+            return operations;
+        } else {
+            throw new OperationNotFoundException("Operation is not found by balance_id");
+        }
+    }
+
+    @Override
+    public List<Operation> findOperationByArticle(Article article) {
+        List<Operation> operations = operationRepository.findOperationByArticle(article);
+        if (operations.size() > 0) {
+            return operations;
+        } else {
+            throw new OperationNotFoundException("Operation is not found by article_id");
+        }
     }
 }

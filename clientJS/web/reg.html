@@ -35,6 +35,7 @@
                         }
                         return response.json();
                     }).then( () => alert("New user created successfully. Now please log in"))
+                    .then( () => localStorage.clear() )
                     .then( () => window.location.href = "./login.html" )
                     .catch( () => alert("User with this nickname exists"));
             }

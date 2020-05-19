@@ -10,6 +10,57 @@
             localStorage.clear();
             window.location.href = "./index.html";
         }
+
+        function getBalance() {
+            fetch("http://localhost:8080/balance/all")
+                .then((response) => {
+                    if (response.status >= 400) {
+                        console.log("Error occured");
+                        alert("You have no access. Log in please.")
+                        localStorage.clear();
+                        return Promise.reject();
+                    }
+                    return response.json();
+                }).then(function (balanceList) {
+
+                var htmlBalance = "";
+
+                htmlBalance += "<table id='operations' border = '1' align='center'>";
+                htmlBalance += "<tr>";
+                htmlBalance += "<th>id</th>";
+                htmlBalance += "<th>debit</th>";
+                htmlBalance += "<th>credit</th>";
+                htmlBalance += "<th>credit_date</th>";
+                htmlBalance += "<th>amount</th>";
+                htmlBalance += "<th></br></th>"
+                htmlBalance += "<th></br></th>"
+                htmlBalance += "</tr>";
+
+                for (var i = 0; i < balanceList.length; i++) {
+                    htmlBalance += "<tr>";
+                    htmlBalance += "<td>" + balanceList[i]["id"] + "</td>";
+                    htmlBalance += "<td>" + balanceList[i].debit + "</td>";
+                    htmlBalance += "<td>" + balanceList[i].credit + "</td>";
+                    htmlBalance += "<td>" + balanceList[i].creditDate + "</td>";
+                    htmlBalance += "<td>" + balanceList[i]["amount"] + "</td>";
+                    htmlBalance += "<td><a href=#>delete</a></td>";
+                    htmlBalance += "<td><a href=# >edit</a></td>";
+                    htmlBalance += "</tr>";
+                }
+
+                htmlBalance += "<tr>";
+                htmlBalance += "<td><a href=#>+</a></td>";
+                htmlBalance += "<td></br></td>";
+                htmlBalance += "<td></br></td>";
+                htmlBalance += "<td></br></td>";
+                htmlBalance += "<td></br></td>";
+                htmlBalance += "<td></br></td>";
+                htmlBalance += "<td></br></td>";
+                htmlBalance += "</tr>";
+
+                document.getElementById("wrapper").innerHTML += htmlBalance;
+            });
+        }
     </script>
 </head>
 <body>
@@ -18,22 +69,7 @@
         <h1>Balance Table</h1>
     </header>
     <p></p>
-    <table border = "1" align="center">
-        <tr>
-            <th>id</th>
-            <th>credit_date</th>
-            <th>debit</th>
-            <th>credit</th>
-            <th>ammount</th>
-        </tr>
-        <tr>
-            <td><br></td>
-            <td><br></td>
-            <td><br></td>
-            <td><br></td>
-            <td><br></td>
-        </tr>
-    </table>
+    <div id="wrapper"><script>getBalance();</script></div>
     <p align="center">
         <select>
             <option>Search by id</option>
