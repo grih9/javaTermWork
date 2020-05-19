@@ -59,7 +59,7 @@
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json',
-                    'Autentication': localStorage.getItem("Authentication")
+                    'Autentication': "Bearer :" + localStorage.getItem("Authentication")
                 }
             })
                 .then( (response) => {

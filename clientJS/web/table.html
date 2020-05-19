@@ -26,25 +26,25 @@
                 var htmlOperations = "";
 
                 htmlOperations += "<table id='operations' border = '1' align='center'>";
-                htmlOperations += "<tr>";
+                htmlOperations += "<tr align='center'>";
                 htmlOperations += "<th>id</th>";
-                htmlOperations += "<th><a href=\"table-articles.html\">article_id</a></th>";
-                htmlOperations += "<th>debit</th>";
-                htmlOperations += "<th>credit</th>";
-                htmlOperations += "<th>credit_date</th>";
-                htmlOperations += "<th><a href=\"table-balance.html\">balance_id</a></th>";
+                htmlOperations += "<th width=100px><a href=\"table-articles.html\">article_id</a></th>";
+                htmlOperations += "<th width=70px>debit</th>";
+                htmlOperations += "<th width=70px>credit</th>";
+                htmlOperations += "<th width=100px>create_date</th>";
+                htmlOperations += "<th width=100px><a href=\"table-balance.html\">balance_id</a></th>";
                 htmlOperations += "<th></br></th>"
                 htmlOperations += "<th></br></th>"
                 htmlOperations += "</tr>";
 
                 for(var i = 0; i < operationsList.length; i++){
-                    htmlOperations += "<tr>";
+                    htmlOperations += "<tr align='center'>";
                     htmlOperations += "<td>" + operationsList[i].id + "</td>";
-                    htmlOperations += "<td>" + operationsList[i].articleId + "</td>";
+                    htmlOperations += "<td>" + operationsList[i].article.id + "</td>";
                     htmlOperations += "<td>" + operationsList[i].debit + "</td>";
                     htmlOperations += "<td>" + operationsList[i].credit + "</td>";
-                    htmlOperations += "<td>" + operationsList[i].creditDate + "</td>";
-                    htmlOperations += "<td>" + operationsList[i].balanceId + "</td>";
+                    htmlOperations += "<td>" + operationsList[i].createDate + "</td>";
+                    htmlOperations += "<td>" + operationsList[i].balance.id + "</td>";
                     htmlOperations += "<td id='tb+${articlesList[i].id}'><a href=# onclick='deleteArticle(this.id)'>delete</a></td>";
                     htmlOperations += "<td><a href=# onclick='editArticle(1)'>edit</a></td>";
                     htmlOperations +="</tr>";
@@ -52,7 +52,6 @@
 
                 htmlOperations += "<tr>";
                 htmlOperations += "<td><a href=#>+</a></td>";
-                htmlOperations += "<td></br></td>";
                 htmlOperations += "<td></br></td>";
                 htmlOperations += "<td></br></td>";
                 htmlOperations += "<td></br></td>";

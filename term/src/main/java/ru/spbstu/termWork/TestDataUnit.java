@@ -25,8 +25,8 @@ public class TestDataUnit implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        articleRepository.save(new Article("Article1"));
-        articleRepository.save(new Article("Article2"));
+//        articleRepository.save(new Article("Article1"));
+//        articleRepository.save(new Article("Article2"));
 
         userRepository.save(new User("admin", passwordEncoder.encode("apwd"),
                 Collections.singletonList("ROLE_ADMIN")));

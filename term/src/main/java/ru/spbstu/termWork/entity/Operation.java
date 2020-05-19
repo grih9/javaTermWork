@@ -2,18 +2,17 @@ package ru.spbstu.termWork.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
 @Table(name = "operations")
 public class Operation {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Long id;
 
-    @ManyToOne(targetEntity = Article.class)
+    @ManyToOne(targetEntity = Article.class, cascade = CascadeType.ALL)
     @JoinColumn(name = "article_id", nullable = false)
     private Article article;
 
@@ -23,11 +22,11 @@ public class Operation {
     @Column
     private Float credit;
 
-    @Column(name = "create_date", length = 3)
+    @Column(name = "create_date", length = 10)
     @NotBlank(message = "Date can't be blank")
-    private Timestamp createDate;
+    private String createDate;
 
-    @ManyToOne(targetEntity = Balance.class)
+    @ManyToOne(targetEntity = Balance.class, cascade=CascadeType.ALL)
     @JoinColumn(name = "balance_id", nullable = false)
     private Balance balance;
 
@@ -35,7 +34,7 @@ public class Operation {
 
     }
 
-    public Operation(Article article, Float debit, Float credit, Timestamp createDate, Balance balance) {
+    public Operation(Article article, Float debit, Float credit, String createDate, Balance balance) {
         if ((credit < 0) || (debit < 0)) {
             throw new IllegalArgumentException("Приход и/или расход не могут быть отрицательными.");
         }
@@ -79,14 +78,21 @@ public class Operation {
         this.credit = credit;
     }
 
-    public Timestamp getCreateDate() {
+    public String getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Timestamp createDate) {
+    public void setCreateDate(String createDate) {
         this.createDate = createDate;
     }
 
+    public Balance getBalance() {
+        return balance;
+    }
+
+    public void setBalance(Balance balance) {
+        this.balance = balance;
+    }
 
     @Override
     public boolean equals(Object o) {

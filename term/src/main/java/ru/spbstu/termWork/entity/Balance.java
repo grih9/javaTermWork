@@ -2,20 +2,20 @@ package ru.spbstu.termWork.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.sql.Timestamp;
+import java.security.Timestamp;
 import java.util.Objects;
 
 @Entity
 @Table(name = "balance")
 public class Balance {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column
     private Long id;
 
-    @Column(name = "create_date", length = 3, unique = true)
+    @Column(name = "create_date", length = 10, unique = true)
     @NotBlank(message = "Date can't be blank")
-    private Timestamp createDate;
+    private String createDate;
 
     @Column
     private Float debit;
@@ -30,17 +30,12 @@ public class Balance {
 
     }
 
-    public Balance(Timestamp createDate, Float debit, Float credit, Float amount) {
-        if ((credit < 0) || (debit < 0)) {
-            throw new IllegalArgumentException("Приход и/или расход не могут быть отрицательными.");
-        }
-
+    public Balance(String createDate, Float debit, Float credit, Float amount) {
         this.createDate = createDate;
         this.debit = debit;
         this.credit = credit;
         this.amount = amount;
     }
-
 
     public Long getId() {
         return id;
@@ -50,11 +45,11 @@ public class Balance {
         this.id = id;
     }
 
-    public Timestamp getCreateDate() {
+    public String getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Timestamp createDate) {
+    public void setCreateDate(String createDate) {
         this.createDate = createDate;
     }
 
