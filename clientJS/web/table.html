@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/html" lang="en">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
@@ -12,7 +12,12 @@
         }
 
         function getOperations() {
-            fetch("http://localhost:8080/operations/all")
+            fetch("http://localhost:8080/operations/all", {
+                method: "GET",
+                headers: {
+                    'Authorization': "Bearer " + localStorage.getItem("Authentication")
+                }
+            })
                 .then( (response) => {
                     if(response.status >= 400){
                         console.log("Error occured");
@@ -28,11 +33,11 @@
                 htmlOperations += "<table id='operations' border = '1' align='center'>";
                 htmlOperations += "<tr align='center'>";
                 htmlOperations += "<th>id</th>";
-                htmlOperations += "<th width=100px><a href=\"table-articles.html\">article_id</a></th>";
-                htmlOperations += "<th width=70px>debit</th>";
-                htmlOperations += "<th width=70px>credit</th>";
-                htmlOperations += "<th width=100px>create_date</th>";
-                htmlOperations += "<th width=100px><a href=\"table-balance.html\">balance_id</a></th>";
+                htmlOperations += "<th width=130px><a href=\"table-articles.html\">article_id</a></th>";
+                htmlOperations += "<th width=110px>debit</th>";
+                htmlOperations += "<th width=110px>credit</th>";
+                htmlOperations += "<th width=140px>create_date</th>";
+                htmlOperations += "<th width=130px><a href=\"table-balance.html\">balance_id</a></th>";
                 htmlOperations += "<th></br></th>"
                 htmlOperations += "<th></br></th>"
                 htmlOperations += "</tr>";
@@ -51,7 +56,7 @@
                 }
 
                 htmlOperations += "<tr>";
-                htmlOperations += "<td><a href=#>+</a></td>";
+                htmlOperations += "<td><a href=# onclick='openAdd()'>+</a></td>";
                 htmlOperations += "<td></br></td>";
                 htmlOperations += "<td></br></td>";
                 htmlOperations += "<td></br></td>";
@@ -64,6 +69,105 @@
                 document.getElementById("wrapper").innerHTML += htmlOperations;
                 });
         }
+
+        function openAdd() {
+            var htmlOperations = "";
+            document.getElementById("input").innerHTML = htmlOperations;
+            htmlOperations += "<p align='center'>";
+            htmlOperations += "<lable class='title'> Article: ";
+            htmlOperations += "<input id=\"article\" class=\"textfield\" type=\"text\" >";
+            htmlOperations += "</label>";
+            htmlOperations += "<lable class='title'> Credit: ";
+            htmlOperations += "<input id=\"credit\" class=\"textfield\" type=\"text\" placeholder=\"0\">";
+            htmlOperations += "</label>";
+            htmlOperations += "</p>";
+            htmlOperations += "<p align='center'>";
+            htmlOperations += "<lable class='title'>    Debit: ";
+            htmlOperations += "<input id=\"debit\" class=\"textfield\" type=\"text\" placeholder=\"0\">";
+            htmlOperations += "</label>";
+            htmlOperations += "<label class='title'> Create date: ";
+            htmlOperations += "<input id=\"date\" type=\"date\" name='createDate' value=\"2018-01-01\" min=\"2018-01-01\" max=\"2021-12-31\" >";
+            htmlOperations += "</label>";
+            htmlOperations += "</p>";
+            htmlOperations += "<p align='center'>";
+            htmlOperations += "<button style width='400x' onclick='addHandler()'>Add</button>";
+            htmlOperations += "</p>";
+
+
+            document.getElementById("input").innerHTML += htmlOperations;
+        }
+
+        function addHandler() {
+            if (localStorage.getItem("Authentication") == '') {
+                alert("You are not authorized");
+                localStorage.clear();
+                window.location.href = "./login.html";
+            } else {
+                var articleName = document.getElementById("article").value;
+                var debitTMP = document.getElementById("credit").value;
+                var creditTMP = document.getElementById("debit").value;
+                var deb = Number(debitTMP);
+                var cred = Number(creditTMP);
+                if ((articleName == '') || (create == '')) {
+                    alert("Enter data please");
+                } else {
+                    if ((isNaN(deb)) || (isNaN(cred))) {
+                        alert("Inappropriate data. Debit and credit are numbers");
+                    } else {
+                        var create = document.getElementById("date").value;
+                        var year = create.slice(0, 4);
+                        var month = create.slice(5, 7);
+                        var day = create.slice(8, 10);
+                        var createdate = day + "/" + month + "/" + year;
+                        if (year < 2018 || year > 2021) {
+                            alert("Inappropriate year");
+                        } else {
+                            var amount = deb - cred;
+                            var token = "Bearer " + localStorage.getItem("Authentication");
+                            alert(token);
+                            fetch("http://localhost:8080/operations/add", {
+                                 method: "POST",
+                                 headers: {
+                                     'Content-Type': 'application/json',
+                                     'Authorization': token
+                                },
+                                body: JSON.stringify({
+                                    debit: deb,
+                                    credit: cred,
+                                    createDate : createdate,
+                                    article : {
+                                        name: articleName
+                                    },
+                                    balance : {
+                                        debit : deb,
+                                        credit : cred,
+                                        createDate : createdate,
+                                        amount : amount
+                                    }
+                                })
+                            }).then((response) => {
+                                    alert("i am here");
+                                    if (response.status >= 400) {
+                                        console.log("User with this nickname doesn't exist");
+                                        return Promise.reject();
+                                    }
+                                    return response.json();
+                                }).then(() => alert("Added successfully"))
+                                .then(() => window.location.href = "./table.html")
+                                .catch(() => alert("User with this nickname doesn't exist"));
+                        }
+                    }
+
+                }
+            }
+        }
+
+        function searchHandler() {
+            var search = document.getElementById("searchField").value;
+            if (search == '') {
+                window.location.href = "./table.html";
+            }
+        }
     </script>
 </head>
 <body>
@@ -73,31 +177,14 @@
     </header>
     <p></p>
     <div id="wrapper"><script>getOperations();</script></div>
-<!--    <table border = "1" align="center">-->
-<!--        <tr>-->
-<!--            <th>id</th>-->
-<!--            <th><a href="table-articles.html">article_id</a></th>-->
-<!--            <th>debit</th>-->
-<!--            <th>credit</th>-->
-<!--            <th>credit_date</th>-->
-<!--            <th><a href="table-balance.html">balance_id</a></th>-->
-<!--        </tr>-->
-<!--        <tr>-->
-<!--            <td><br></td>-->
-<!--            <td><br></td>-->
-<!--            <td><br></td>-->
-<!--            <td><br></td>-->
-<!--            <td><br></td>-->
-<!--            <td><br></td>-->
-<!--        </tr>-->
-<!--    </table>-->
+    <div id="input"></div>
     <p align="center">
-        <select>
+        <select id="selecter">
             <option>Search by id</option>
             <option>Search by name</option>
         </select>
-        <input class="textfield" type="text">
-        <input value="Search" type="button" onclick="location.href='success.html'"/>
+        <input id="searchField" class="textfield" type="text">
+        <input value="Search" type="button" onclick='searchHandler()'/>
     </p>
     <form id="todo-form">
         <input value="Back" type="button" onclick="history.back();"/>

@@ -12,7 +12,12 @@
         }
         
         function getArticles() {
-            fetch("http://localhost:8080/articles/all")
+            fetch("http://localhost:8080/articles/all", {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + localStorage.getItem("Authentication")
+                }
+            })
                 .then( (response) => {
                     if(response.status >= 400){
                         console.log("Error occured");
@@ -26,15 +31,15 @@
                     var htmlArticle = "";
 
                     htmlArticle += "<table id='articles' border = '1' align='center'>";
-                    htmlArticle += "<tr>";
-                    htmlArticle += "<th>id</th>";
-                    htmlArticle += "<th>name</th>";
+                    htmlArticle += "<tr align='center'>";
+                    htmlArticle += "<th width='80px'>id</th>";
+                    htmlArticle += "<th width='140px'>name</th>";
                     htmlArticle += "<th></br></th>"
                     htmlArticle += "<th></br></th>"
                     htmlArticle += "</tr>";
 
                     for(var i = 0; i < articlesList.length; i++){
-                        htmlArticle += "<tr>";
+                        htmlArticle += "<tr align='center'>";
                         htmlArticle += "<td>" + articlesList[i]["id"] + "</td>";
                         htmlArticle += "<td>" + articlesList[i]["name"] + "</td>";
                         htmlArticle += "<td id='tb+${articlesList[i].id}'><a href=# onclick='deleteArticle(this.id)'>delete</a></td>";
@@ -43,7 +48,7 @@
                     }
 
                     htmlArticle += "<tr>";
-                    htmlArticle += "<td><a href=#>+</a></td>";
+                    htmlArticle += "<td><a href=# onclick='openAdd()'>+</a></td>";
                     htmlArticle += "<td></br></td>";
                     htmlArticle += "<td></br></td>";
                     htmlArticle += "<td></br></td>";
@@ -53,13 +58,59 @@
                 });
         }
 
+        function openAdd() {
+            var htmlOP = "";
+            document.getElementById("input").innerHTML = htmlOP;
+            htmlOP += "<p align='center'>";
+            htmlOP += "<lable class='title'> Name: ";
+            htmlOP += "<input id=\"articleName\" class=\"textfield\" type=\"text\" >";
+            htmlOP += "</label>";
+            htmlOP += "<button style width='400px' onclick='addHandler()'>Add</button>";
+            htmlOP += "</p>";
+
+
+            document.getElementById("input").innerHTML += htmlOP;
+        }
+
+        function addHandler() {
+            if (localStorage.getItem("Authentication") == '') {
+                alert("You are not authorized");
+                localStorage.clear();
+                window.location.href = "./login.html";
+            } else {
+                var articleName = document.getElementById("articleName").value;
+                if (articleName == '') {
+                    alert("Enter data please");
+                } else {
+                    var token = "Bearer " + localStorage.getItem("Authentication");
+                    fetch("http://localhost:8080/articles/add", {
+                        method: "POST",
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': token
+                        },
+                        body: JSON.stringify({
+                            name : articleName
+                        })
+                    }).then((response) => {
+                        if (response.status >= 400) {
+                            console.log("User with this nickname doesn't exist");
+                            return Promise.reject();
+                        }
+                        return response.json();
+                    }).then(() => window.location.href = "./table-articles.html")
+                        .catch(() => alert("User with this nickname doesn't exist"));
+                }
+            }
+        }
+
         function deleteArticle(id) {
             alert(id);
             fetch("http://localhost:8080/id/" + id, {
                 method: "DELETE",
                 headers: {
                     'Content-Type': 'application/json',
-                    'Autentication': "Bearer :" + localStorage.getItem("Authentication")
+                    'Authentication': "Bearer :" + localStorage.getItem("Authentication")
                 }
             })
                 .then( (response) => {
@@ -94,6 +145,7 @@
         <input class="textfield" type="text">
         <input value="Search" type="button" onclick="location.href='success.html'"/>
     </p>
+    <div id="input"></div>
     <form id="todo-form">
         <input value="Back" type="button" onclick="history.back();"/>
         <input value="Info" type="button" onclick="location.href='index.html'"/>
