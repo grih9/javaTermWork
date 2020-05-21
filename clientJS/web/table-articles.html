@@ -42,8 +42,8 @@
                         htmlArticle += "<tr align='center'>";
                         htmlArticle += "<td>" + articlesList[i]["id"] + "</td>";
                         htmlArticle += "<td>" + articlesList[i]["name"] + "</td>";
-                        htmlArticle += "<td id='tb+${articlesList[i].id}'><a href=# onclick='deleteArticle(this.id)'>delete</a></td>";
-                        htmlArticle += "<td><a href=# onclick='editArticle(1)'>edit</a></td>";
+                        htmlArticle += "<td id=\"d" + articlesList[i].id + "\"><a href=# onclick='deleteArticle(" + articlesList[i].id +")'>delete</a></td>";
+                        htmlArticle += "<td id=\"e" + articlesList[i].id + "\"><a href=# onclick='editArticle(" + articlesList[i].id +")'>edit</a></td>";
                         htmlArticle +="</tr>";
                     }
 
@@ -104,6 +104,13 @@
             }
         }
 
+        function searchHandler() {
+            var search = document.getElementById("searchField").value;
+            if (search == '') {
+                window.location.href = "./table-articles.html";
+            }
+        }
+
         function deleteArticle(id) {
             alert(id);
             fetch("http://localhost:8080/id/" + id, {
@@ -126,7 +133,7 @@
         }
 
         function editArticle(id) {
-
+            alert(id);
         }
     </script>
 </head>
@@ -137,15 +144,15 @@
     </header>
     <p></p>
     <div id="wrapper"><script>getArticles();</script></div>
+    <div id="input"></div>
     <p align="center">
         <select>
-            <option>Search by id</option>
-            <option>Search by name</option>
+            <option value="id">Search by id</option>
+            <option value="name">Search by name</option>
         </select>
-        <input class="textfield" type="text">
-        <input value="Search" type="button" onclick="location.href='success.html'"/>
+        <input class="textfield" id="searchField" type="text">
+        <input value="Search" type="button" onclick=searchHandler()/>
     </p>
-    <div id="input"></div>
     <form id="todo-form">
         <input value="Back" type="button" onclick="history.back();"/>
         <input value="Info" type="button" onclick="location.href='index.html'"/>

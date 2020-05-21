@@ -11,7 +11,7 @@
             window.location.href = "./index.html";
         }
 
-        function getOperations() {
+        async function getOperations() {
             fetch("http://localhost:8080/operations/all", {
                 method: "GET",
                 headers: {
@@ -42,7 +42,7 @@
                 htmlOperations += "<th></br></th>"
                 htmlOperations += "</tr>";
 
-                for(var i = 0; i < operationsList.length; i++){
+                for (var i = 0; i < operationsList.length; i++) {
                     htmlOperations += "<tr align='center'>";
                     htmlOperations += "<td>" + operationsList[i].id + "</td>";
                     htmlOperations += "<td>" + operationsList[i].article.id + "</td>";
@@ -50,9 +50,9 @@
                     htmlOperations += "<td>" + operationsList[i].credit + "</td>";
                     htmlOperations += "<td>" + operationsList[i].createDate + "</td>";
                     htmlOperations += "<td>" + operationsList[i].balance.id + "</td>";
-                    htmlOperations += "<td id='tb+${articlesList[i].id}'><a href=# onclick='deleteArticle(this.id)'>delete</a></td>";
-                    htmlOperations += "<td><a href=# onclick='editArticle(1)'>edit</a></td>";
-                    htmlOperations +="</tr>";
+                    htmlOperations += "<td id=\"d" + operationsList[i].id + "\"><a href=# onclick='deleteOperation(" + operationsList[i].id + ")'>delete</a></td>";
+                    htmlOperations += "<td id=\"e" + operationsList[i].id + "\"><a href=# onclick='editOperation(" + operationsList[i].id + ")'>edit</a></td>";
+                    htmlOperations += "</tr>";
                 }
 
                 htmlOperations += "<tr>";
@@ -67,52 +67,208 @@
                 htmlOperations += "</tr>";
 
                 document.getElementById("wrapper").innerHTML += htmlOperations;
-                });
+            });
         }
 
-        function openAdd() {
-            var htmlOperations = "";
-            document.getElementById("input").innerHTML = htmlOperations;
-            htmlOperations += "<p align='center'>";
-            htmlOperations += "<lable class='title'> Article: ";
-            htmlOperations += "<input id=\"article\" class=\"textfield\" type=\"text\" >";
-            htmlOperations += "</label>";
-            htmlOperations += "<lable class='title'> Credit: ";
-            htmlOperations += "<input id=\"credit\" class=\"textfield\" type=\"text\" placeholder=\"0\">";
-            htmlOperations += "</label>";
-            htmlOperations += "</p>";
-            htmlOperations += "<p align='center'>";
-            htmlOperations += "<lable class='title'>    Debit: ";
-            htmlOperations += "<input id=\"debit\" class=\"textfield\" type=\"text\" placeholder=\"0\">";
-            htmlOperations += "</label>";
-            htmlOperations += "<label class='title'> Create date: ";
-            htmlOperations += "<input id=\"date\" type=\"date\" name='createDate' value=\"2018-01-01\" min=\"2018-01-01\" max=\"2021-12-31\" >";
-            htmlOperations += "</label>";
-            htmlOperations += "</p>";
-            htmlOperations += "<p align='center'>";
-            htmlOperations += "<button style width='400x' onclick='addHandler()'>Add</button>";
-            htmlOperations += "</p>";
+        async function openAdd() {
+            fetch("http://localhost:8080/balance/all", {
+                method: "GET",
+                headers: {
+                    'Authorization': "Bearer " + localStorage.getItem("Authentication")
+                }
+            }).then( (response) => {
+                if (response.status >= 400) {
+                    console.log("Error occured");
+                    alert("You have no access. Log in please.")
+                    localStorage.clear();
+                    return Promise.reject();
+                }
+                return response.json();
+            }).then(function (balanceList) {
+                var htmlOperations = "";
+                document.getElementById("input").innerHTML = htmlOperations;
+                htmlOperations += "<p align='center'>";
+                htmlOperations += "<lable class='title'> Article: ";
+                htmlOperations += "<input id=\"article\" class=\"textfield\" type=\"text\" >";
+                htmlOperations += "</label>";
+                htmlOperations += "<lable class='title'> Credit: ";
+                htmlOperations += "<input id=\"credit\" class=\"textfield\" type=\"text\" placeholder=\"0\">";
+                htmlOperations += "</label>";
+                htmlOperations += "</p>";
+                htmlOperations += "<p align='center'>";
+                htmlOperations += "<lable class='title'>    Debit: ";
+                htmlOperations += "<input id=\"debit\" class=\"textfield\" type=\"text\" placeholder=\"0\">";
+                htmlOperations += "</label>";
+                htmlOperations += "<label class='title'> Create date: ";
+                htmlOperations += "<input id=\"date\" type=\"date\" name='createDate' value=\"2018-01-01\" min=\"2018-01-01\" max=\"2021-12-31\" >";
+                htmlOperations += "</label>";
+                htmlOperations += "</p>";
+                htmlOperations += "<p align='center'>";
+                htmlOperations += "<select id='balance'>"
+                htmlOperations += "<option value='new'>Add new balance</option>";
+                for (var i = 0; i < balanceList.length; i++) {
+                    htmlOperations += "<option value=\"" + balanceList[i].id + "\">id:" + balanceList[i].id + " amount:" + balanceList[i]["amount"]+ "</option>";
+                }
+                htmlOperations += "</select>"
+                htmlOperations += "<button style width='400x' onclick='addHandler()'>Add</button>";
+                htmlOperations += "</p>";
 
 
-            document.getElementById("input").innerHTML += htmlOperations;
+                document.getElementById("input").innerHTML += htmlOperations;
+            });
         }
 
-        function addHandler() {
-            if (localStorage.getItem("Authentication") == '') {
+        async function getArticleByName(articleName) {
+            await fetch("http://localhost:8080/articles/name/" + articleName, {
+                method: "GET",
+                headers: {
+                    'Authorization': "Bearer " + localStorage.getItem("Authentication")
+                }
+            }).then((response) => {
+                if (response.status === 404) {
+                    alert("Article is not found");
+                    return Promise.reject();
+                } else if (response.status >= 400) {
+                    alert("You have no access. Log in please.")
+                    return Promise.reject();
+                }
+                return response.json();
+            }).then((j) => JSON.stringify(j))
+                .then((data) => JSON.parse(data))
+                .then((obj) => localStorage.setItem("aid", obj["id"]))
+                .catch(() => console.log("Error occured"));
+
+            alert("aid is");
+            alert(localStorage.getItem("aid"));
+        }
+
+        async function getBalanceAmount(id) {
+            await fetch("http://localhost:8080/balance/id/" + id, {
+                method: "GET",
+                headers: {
+                    'Authorization': "Bearer " + localStorage.getItem("Authentication")
+                }
+            }).then((response) => {
+                if (response.status === 404) {
+                    alert("Balance is not found");
+                    return Promise.reject();
+                } else if (response.status >= 400) {
+                    alert("You have no access. Log in please.")
+                    return Promise.reject();
+                }
+                return response.json();
+            }).then((j) => JSON.stringify(j))
+                .then((data) => JSON.parse(data))
+                .then((obj) => {
+                    localStorage.setItem("bamount", obj["amount"]);
+                    localStorage.setItem("bdate", obj.createDate);
+                    localStorage.setItem("bcredit", obj.credit);
+                    localStorage.setItem("bdebit", obj.debit);
+                })
+                .catch(() => console.log("Error occured"));
+
+            alert("bamount is");
+            alert(localStorage.getItem("bamount"));
+            alert("bdate is");
+            alert(localStorage.getItem("bdate"));
+            alert("bdebit is");
+            alert(localStorage.getItem("bdebit"));
+            alert("bcredit is");
+            alert(localStorage.getItem("bcredit"));
+        }
+
+        async function addNewArticle(articleName) {
+            var token = "Bearer " + localStorage.getItem("Authentication");
+            await fetch("http://localhost:8080/articles/add", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token
+                },
+                body: JSON.stringify({
+                    name: articleName
+                })
+            }).then((response) => {
+                if (response.status >= 400) {
+                    console.log("User with this nickname doesn't exist");
+                    return Promise.reject();
+                }
+                return response.json();
+            }).then(() => alert("article ok"))
+                .catch(() => alert("User with this nickname doesn't exist"));
+
+        }
+
+        async function addNewBalance(deb, cred, createDate, amount) {
+            var token = "Bearer " + localStorage.getItem("Authentication");
+            await fetch("http://localhost:8080/balance/add", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token
+                },
+                body: JSON.stringify({
+                    debit: deb,
+                    credit: cred,
+                    createDate: createDate,
+                    amount: amount
+                })
+            }).then((response) => {
+                if (response.status >= 400) {
+                    console.log("User with this nickname doesn't exist");
+                    return Promise.reject();
+                }
+                alert(localStorage.getItem("bid"));
+                return response.json();
+            }).then((j) => JSON.stringify(j))
+                .then((data) => JSON.parse(data))
+                .then((obj) => localStorage.setItem("bid", obj["id"]))
+                .then(() => alert("balance ok"))
+                .catch(() => alert("User with this nickname doesn't exist"));
+        }
+
+        async function updateBalance(id, deb, cred, createDate, amount) {
+            var token = "Bearer " + localStorage.getItem("Authentication");
+            await fetch("http://localhost:8080/balance/id/" + id, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': token
+                },
+                body: JSON.stringify({
+                    id : id,
+                    debit: deb,
+                    credit: cred,
+                    createDate: createDate,
+                    amount: amount
+                })
+            }).then((response) => {
+                if (response.status >= 400) {
+                    console.log("User with this nickname doesn't exist");
+                    return Promise.reject();
+                }
+                alert(localStorage.getItem("bid"));
+                return response.json();
+            }).then(() => alert("balance ok"))
+                .catch(() => alert("User with this nickname doesn't exist"));
+        }
+
+        async function addHandler() {
+            if (localStorage.getItem("Authentication") == '' || localStorage.getItem("Authentication") == null) {
                 alert("You are not authorized");
                 localStorage.clear();
                 window.location.href = "./login.html";
             } else {
                 var articleName = document.getElementById("article").value;
-                var debitTMP = document.getElementById("credit").value;
-                var creditTMP = document.getElementById("debit").value;
+                var debitTMP = document.getElementById("debit").value;
+                var creditTMP = document.getElementById("credit").value;
                 var deb = Number(debitTMP);
                 var cred = Number(creditTMP);
                 if ((articleName == '') || (create == '')) {
                     alert("Enter data please");
                 } else {
-                    if ((isNaN(deb)) || (isNaN(cred))) {
-                        alert("Inappropriate data. Debit and credit are numbers");
+                    if ((isNaN(deb)) || (isNaN(cred)) || deb < 0 || cred < 0) {
+                        alert("Inappropriate data. Debit and credit are positive numbers");
                     } else {
                         var create = document.getElementById("date").value;
                         var year = create.slice(0, 4);
@@ -122,43 +278,97 @@
                         if (year < 2018 || year > 2021) {
                             alert("Inappropriate year");
                         } else {
-                            var amount = deb - cred;
                             var token = "Bearer " + localStorage.getItem("Authentication");
-                            alert(token);
+                            localStorage.setItem("aid", '');
+                            localStorage.setItem("bid", '');
+                            localStorage.setItem("bamount", '');
+                            localStorage.setItem("bdate", '');
+                            selecterHandler();
+                            var amount = deb - cred;
+                            if (localStorage.getItem("bid") == '') {
+                                if (amount < 0) {
+                                    alert("Amount can't be less than zero");
+                                    return;
+                                }
+                            } else {
+                                await getBalanceAmount(localStorage.getItem("bid"));
+                                amount += Number(localStorage.getItem("bamount"));
+                                alert("amount is");
+                                alert(amount);
+                                if (amount < 0) {
+                                    alert("Amount can't be less than zero");
+                                    return;
+                                }
+                                if (Number(localStorage.getItem("bdate").slice(6, 10)) > year) {
+                                    alert("Inappropriate year. Create new balance if you want to save this date.");
+                                    return ;
+                                } else if(Number(localStorage.getItem("bdate").slice(6, 10)) == year && Number(localStorage.getItem("bdate").slice(3, 5)) > month) {
+                                    alert("Inappropriate month. Create new balance if you want to save this date.");
+                                    return ;
+                                } else if(Number(localStorage.getItem("bdate").slice(6, 10)) == year &&
+                                    Number(localStorage.getItem("bdate").slice(3, 5)) == month && Number(localStorage.getItem("bdate").slice(0, 2)) > day) {
+                                    alert("Inappropriate day. Create new balance if you want to save this date.");
+                                    return ;
+                                }
+
+                                await updateBalance(localStorage.getItem("bid"), deb + Number(localStorage.getItem("bdebit")),
+                                    cred + Number(localStorage.getItem("bcredit")), localStorage.getItem("bdate"), amount);
+                            }
+                            await getArticleByName(articleName);
+
+                            if (localStorage.getItem("aid") == '' || localStorage.getItem("aid") == null) {
+                                alert("newArticle");
+                                await addNewArticle(articleName);
+                                await getArticleByName(articleName);
+                            }
+                            if (localStorage.getItem("bid") == '' || localStorage.getItem("bid") == null) {
+                                alert("newBalance");
+                                await addNewBalance(deb, cred, createdate, amount);
+                            }
+
                             fetch("http://localhost:8080/operations/add", {
-                                 method: "POST",
-                                 headers: {
-                                     'Content-Type': 'application/json',
-                                     'Authorization': token
+                                method: "POST",
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': token
                                 },
                                 body: JSON.stringify({
                                     debit: deb,
                                     credit: cred,
-                                    createDate : createdate,
-                                    article : {
+                                    createDate: createdate,
+                                    article: {
+                                        id : localStorage.getItem("aid"),
                                         name: articleName
                                     },
-                                    balance : {
-                                        debit : deb,
-                                        credit : cred,
-                                        createDate : createdate,
-                                        amount : amount
+                                    balance: {
+                                        id : localStorage.getItem("bid"),
+                                        debit: deb,
+                                        credit: cred,
+                                        createDate: createdate,
+                                        amount: amount
                                     }
                                 })
                             }).then((response) => {
-                                    alert("i am here");
-                                    if (response.status >= 400) {
-                                        console.log("User with this nickname doesn't exist");
-                                        return Promise.reject();
-                                    }
-                                    return response.json();
-                                }).then(() => alert("Added successfully"))
+                                if (response.status >= 400) {
+                                    console.log("User with this nickname doesn't exist");
+                                    return Promise.reject();
+                                }
+                                return response.json();
+                            }).then(() => alert("Added successfully"))
                                 .then(() => window.location.href = "./table.html")
                                 .catch(() => alert("User with this nickname doesn't exist"));
                         }
                     }
-
                 }
+            }
+        }
+
+        function selecterHandler() {
+            var selected = document.getElementById("balance").value;
+            if (selected == 'new') {
+                localStorage.setItem("bid", '');
+            } else {
+                localStorage.setItem("bid", selected);
             }
         }
 

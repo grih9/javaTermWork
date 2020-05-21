@@ -12,7 +12,7 @@ public class Operation {
     @Column
     private Long id;
 
-    @ManyToOne(targetEntity = Article.class, cascade = CascadeType.ALL)
+    @ManyToOne(targetEntity = Article.class, cascade = CascadeType.MERGE)
     @JoinColumn(name = "article_id", nullable = false)
     private Article article;
 
@@ -26,7 +26,7 @@ public class Operation {
     @NotBlank(message = "Date can't be blank")
     private String createDate;
 
-    @ManyToOne(targetEntity = Balance.class, cascade=CascadeType.ALL)
+    @ManyToOne(targetEntity = Balance.class, cascade=CascadeType.MERGE)
     @JoinColumn(name = "balance_id", nullable = false)
     private Balance balance;
 

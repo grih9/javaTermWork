@@ -13,7 +13,7 @@ public class Balance {
     @Column
     private Long id;
 
-    @Column(name = "create_date", length = 10, unique = true)
+    @Column(name = "create_date", length = 10)
     @NotBlank(message = "Date can't be blank")
     private String createDate;
 
