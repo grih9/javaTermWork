@@ -22,8 +22,6 @@
                 .then( (response) => {
                     if(response.status >= 400){
                         console.log("Error occured");
-                        alert("You have no access. Log in please.")
-                        localStorage.clear();
                         return Promise.reject();
                     }
                     return response.json();
@@ -68,6 +66,10 @@
                 htmlOperations += "</tr>";
 
                 document.getElementById("wrapper").innerHTML += htmlOperations;
+            }).catch(() => {
+                console.log("Error occured");
+                alert("Your access expired or you haven't entered. Log in please.")
+                unAuthorize();
             });
         }
 
@@ -80,8 +82,6 @@
             }).then( (response) => {
                 if (response.status >= 400) {
                     console.log("Error occured");
-                    alert("You have no access. Log in please.")
-                    localStorage.clear();
                     return Promise.reject();
                 }
                 return response.json();
@@ -93,12 +93,12 @@
                 htmlOperations += "<input id=\"article\" class=\"textfield\" type=\"text\" >";
                 htmlOperations += "</label>";
                 htmlOperations += "<lable class='title'> Credit: ";
-                htmlOperations += "<input id=\"credit\" class=\"textfield\" type=\"text\" placeholder=\"0\">";
+                htmlOperations += "<input id=\"credit\" class=\"textfield\" type=\"number\" min='0' placeholder=\"0\">";
                 htmlOperations += "</label>";
                 htmlOperations += "</p>";
                 htmlOperations += "<p align='center'>";
                 htmlOperations += "<lable class='title'>    Debit: ";
-                htmlOperations += "<input id=\"debit\" class=\"textfield\" type=\"text\" placeholder=\"0\">";
+                htmlOperations += "<input id=\"debit\" class=\"textfield\" type=\"number\" min='0' placeholder=\"0\">";
                 htmlOperations += "</label>";
                 htmlOperations += "<label class='title'> Create date: ";
                 htmlOperations += "<input id=\"date\" type=\"date\" name='createDate' value=\"2018-01-01\" min=\"2018-01-01\" max=\"2021-12-31\" >";
@@ -111,11 +111,14 @@
                     htmlOperations += "<option value=\"" + balanceList[i].id + "\">id:" + balanceList[i].id + " amount:" + balanceList[i]["amount"]+ "</option>";
                 }
                 htmlOperations += "</select>"
-                htmlOperations += "<button style width=400px onclick='addHandler()'>Add</button>";
+                htmlOperations += " <button style width=400px onclick='addHandler()'>Add</button>";
                 htmlOperations += "</p>";
 
-
                 document.getElementById("input").innerHTML += htmlOperations;
+            }).catch(() => {
+                console.log("Error occured");
+                alert("Your access expired or you haven't entered. Log in please.")
+                unAuthorize();
             });
         }
 
@@ -129,8 +132,11 @@
                 if (response.status === 404) {
                     console.log("Article is not found");
                     return Promise.reject();
+                } else if (response.status === 403){
+                    console.log("Error occured");
+                    alert("Your access expired or you haven't entered. Log in please.");
+                    unAuthorize();
                 } else if (response.status >= 400) {
-                    alert("You have no access. Log in please.")
                     return Promise.reject();
                 }
                 return response.json();
@@ -153,8 +159,11 @@
                 if (response.status === 404) {
                     console.log("Balance is not found");
                     return Promise.reject();
+                } else if (response.status === 403){
+                    console.log("Error occured");
+                    alert("Your access expired or you haven't entered. Log in please.")
+                    unAuthorize();
                 } else if (response.status >= 400) {
-                    alert("You have no access. Log in please.")
                     return Promise.reject();
                 }
                 return response.json();
@@ -181,12 +190,15 @@
                     name: articleName
                 })
             }).then((response) => {
-                if (response.status >= 400) {
-                    console.log("User with this nickname doesn't exist");
+                if (response.status === 403){
+                    console.log("Error occured");
+                    alert("Your access expired or you haven't entered. Log in please.")
+                    unAuthorize();
+                } else if (response.status >= 400) {
                     return Promise.reject();
                 }
                 return response.json();
-            }).catch(() => alert("User with this nickname doesn't exist"));
+            }).catch(() => console.log("Error occurred"));
 
         }
 
@@ -205,15 +217,18 @@
                     amount: amount
                 })
             }).then((response) => {
-                if (response.status >= 400) {
-                    console.log("User with this nickname doesn't exist");
+                if (response.status === 403) {
+                    console.log("Error occured");
+                    alert("Your access expired or you haven't entered. Log in please.");
+                    unAuthorize();
+                } else if (response.status >= 400) {
                     return Promise.reject();
                 }
                 return response.json();
             }).then((j) => JSON.stringify(j))
                 .then((data) => JSON.parse(data))
                 .then((obj) => localStorage.setItem("bid", obj["id"]))
-                .catch(() => alert("User with this nickname doesn't exist"));
+                .catch(() => console.log("Error occurred"));
         }
 
         async function updateBalance(id, deb, cred, createDate, amount) {
@@ -232,12 +247,15 @@
                     amount: amount
                 })
             }).then((response) => {
-                if (response.status >= 400) {
-                    console.log("User with this nickname doesn't exist");
+                if (response.status === 403){
+                    console.log("Error occured");
+                    alert("Your access expired or you haven't entered. Log in please.");
+                    unAuthorize();
+                } else if (response.status >= 400) {
                     return Promise.reject();
                 }
                 return response.json();
-            }).catch(() => alert("User with this nickname doesn't exist"));
+            }).catch(() => console.log("Error occured"));
         }
 
         async function addHandler() {
@@ -249,15 +267,23 @@
                 var articleName = document.getElementById("article").value;
                 var debitTMP = document.getElementById("debit").value;
                 var creditTMP = document.getElementById("credit").value;
-                var deb = Number(debitTMP);
-                var cred = Number(creditTMP);
+                var deb = 0;
+                if (debitTMP !== '') {
+                    deb = Number(debitTMP);
+                }
+                var cred = 0;
+                if (creditTMP !== '') {
+                    cred = Number(creditTMP);
+                }
+                var create = document.getElementById("date").value;
                 if ((articleName == '') || (create == '')) {
                     alert("Enter data please");
                 } else {
                     if ((isNaN(deb)) || (isNaN(cred)) || deb < 0 || cred < 0) {
-                        alert("Inappropriate data. Debit and credit are positive numbers");
+                        alert("Inappropriate data. Debit and credit are nonnegative numbers");
+                    } else if (deb === 0 && cred === 0) {
+                        alert("Inappropriate data. Debit and credit can't be both null");
                     } else {
-                        var create = document.getElementById("date").value;
                         var year = create.slice(0, 4);
                         var month = create.slice(5, 7);
                         var day = create.slice(8, 10);
@@ -332,14 +358,16 @@
                                     }
                                 })
                             }).then((response) => {
-                                if (response.status >= 400) {
-                                    console.log("User with this nickname doesn't exist");
+                                if (response.status === 403){
+                                    console.log("Error occured");
+                                    alert("Your access expired or you haven't entered. Log in please.");
+                                    unAuthorize();
+                                } else if (response.status >= 400) {
                                     return Promise.reject();
                                 }
                                 return response.json();
-                            }).then(() => alert("Added successfully"))
-                                .then(() => window.location.href = "./table.html")
-                                .catch(() => alert("User with this nickname doesn't exist"));
+                            }).then(() => window.location.href = "./table.html")
+                                .catch(() => console.log("Error occurred"));
                         }
                     }
                 }
@@ -363,12 +391,13 @@
                 }
             }).then( (response) => {
                 if (response.status == 404) {
-                    alert("No operations has found");
+                    alert("No operations were found");
                     return Promise.reject();
-                } else if (response.status >= 400) {
+                }  else if (response.status === 403){
                     console.log("Error occured");
-                    alert("You have no access. Log in please.")
-                    localStorage.clear();
+                    alert("Your access expired or you haven't entered. Log in please.");
+                    unAuthorize();
+                } else if (response.status >= 400) {
                     return Promise.reject();
                 }
                 return response.json();
@@ -384,8 +413,10 @@
                 htmlOperations += "<th width=110px>credit</th>";
                 htmlOperations += "<th width=140px>create_date</th>";
                 htmlOperations += "<th width=130px><a href=\"table-balance.html\">balance_id</a></th>";
-                htmlOperations += "</tr>";
+                htmlOperations += "<th></br></th>";
+                htmlOperations += "<th></br></th>";
 
+                htmlOperations += "</tr>";
                 htmlOperations += "<tr align='center'>";
                 htmlOperations += "<td>" + operationsList.id + "</td>";
                 htmlOperations += "<td>" + operationsList.article.id + "</td>";
@@ -393,6 +424,8 @@
                 htmlOperations += "<td>" + operationsList.credit + "</td>";
                 htmlOperations += "<td>" + operationsList.createDate + "</td>";
                 htmlOperations += "<td>" + operationsList.balance.id + "</td>";
+                htmlOperations += "<td id=\"d" + operationsList[i].id + "\"><i onclick='deleteOperation(" + operationsList[i].id + ")' class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td>";
+                htmlOperations += "<td id=\"e" + operationsList[i].id + "\"><i onclick='editOperation(" + operationsList[i].id + ")' class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td>";
                 htmlOperations += "</tr>";
 
 
@@ -403,10 +436,12 @@
                 htmlOperations += "<td></br></td>";
                 htmlOperations += "<td></br></td>";
                 htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
                 htmlOperations += "</tr>";
 
                 document.getElementById("wrapper").innerHTML += htmlOperations;
-            });
+            }).catch(() => console.log("Error occured"));
         }
 
         function getOperationsByArticleId(id) {
@@ -417,12 +452,13 @@
                 }
             }).then( (response) => {
                 if (response.status == 404) {
-                    alert("No operations has found");
+                    alert("No operations were found");
                     return Promise.reject();
-                } else if (response.status >= 400) {
+                } else if (response.status === 403){
                     console.log("Error occured");
-                    alert("You have no access. Log in please.")
-                    localStorage.clear();
+                    alert("Your access expired or you haven't entered. Log in please.");
+                    unAuthorize();
+                } else if (response.status >= 400) {
                     return Promise.reject();
                 }
                 return response.json();
@@ -438,6 +474,8 @@
                 htmlOperations += "<th width=110px>credit</th>";
                 htmlOperations += "<th width=140px>create_date</th>";
                 htmlOperations += "<th width=130px><a href=\"table-balance.html\">balance_id</a></th>";
+                htmlOperations += "<th></th>";
+                htmlOperations += "<th></th>";
                 htmlOperations += "</tr>";
 
                 for (var i = 0; i < operationsList.length; i++) {
@@ -448,6 +486,8 @@
                     htmlOperations += "<td>" + operationsList[i].credit + "</td>";
                     htmlOperations += "<td>" + operationsList[i].createDate + "</td>";
                     htmlOperations += "<td>" + operationsList[i].balance.id + "</td>";
+                    htmlOperations += "<td id=\"d" + operationsList[i].id + "\"><i onclick='deleteOperation(" + operationsList[i].id + ")' class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td>";
+                    htmlOperations += "<td id=\"e" + operationsList[i].id + "\"><i onclick='editOperation(" + operationsList[i].id + ")' class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td>";
                     htmlOperations += "</tr>";
                 }
 
@@ -458,10 +498,12 @@
                 htmlOperations += "<td></br></td>";
                 htmlOperations += "<td></br></td>";
                 htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
                 htmlOperations += "</tr>";
 
                 document.getElementById("wrapper").innerHTML += htmlOperations;
-            });
+            }).catch(() => console.log("Error occured"));
         }
 
         function getOperationsByBalanceId(id) {
@@ -471,13 +513,14 @@
                     'Authorization': "Bearer " + localStorage.getItem("Authentication")
                 }
             }).then( (response) => {
-                if (response.status == 404) {
-                    alert("No operations has found");
+                if (response.status === 404) {
+                    alert("No opertaions were found");
                     return Promise.reject();
-                } else if (response.status >= 400) {
+                } else if (response.status === 403){
                     console.log("Error occured");
-                    alert("You have no access. Log in please.")
-                    localStorage.clear();
+                    alert("Your access expired or you haven't entered. Log in please.");
+                    unAuthorize();
+                } else if (response.status >= 400) {
                     return Promise.reject();
                 }
                 return response.json();
@@ -493,6 +536,8 @@
                 htmlOperations += "<th width=110px>credit</th>";
                 htmlOperations += "<th width=140px>create_date</th>";
                 htmlOperations += "<th width=130px><a href=\"table-balance.html\">balance_id</a></th>";
+                htmlOperations += "<th></th>";
+                htmlOperations += "<th></th>";
                 htmlOperations += "</tr>";
 
                 for (var i = 0; i < operationsList.length; i++) {
@@ -503,6 +548,8 @@
                     htmlOperations += "<td>" + operationsList[i].credit + "</td>";
                     htmlOperations += "<td>" + operationsList[i].createDate + "</td>";
                     htmlOperations += "<td>" + operationsList[i].balance.id + "</td>";
+                    htmlOperations += "<td id=\"d" + operationsList[i].id + "\"><i onclick='deleteOperation(" + operationsList[i].id + ")' class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td>";
+                    htmlOperations += "<td id=\"e" + operationsList[i].id + "\"><i onclick='editOperation(" + operationsList[i].id + ")' class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td>";
                     htmlOperations += "</tr>";
                 }
 
@@ -513,10 +560,12 @@
                 htmlOperations += "<td></br></td>";
                 htmlOperations += "<td></br></td>";
                 htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
                 htmlOperations += "</tr>";
 
                 document.getElementById("wrapper").innerHTML += htmlOperations;
-            });
+            }).catch(() => console.log("Error occured"));
         }
 
         function searchHandler() {
@@ -550,7 +599,7 @@
             <option value="byArticleId">Search by articleId</option>
             <option value="byBalanceId">Search by balanceId</option>
         </select>
-        <input id="searchField" min="0" class="textfield" type="text">
+        <input id="searchField" min="0" class="textfield" type="search">
         <input value="Search" type="button" onclick='searchHandler()'/>
     </p>
     <form id="todo-form">

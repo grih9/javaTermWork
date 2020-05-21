@@ -26,7 +26,7 @@
 
                 var htmlBalance = "";
 
-                htmlBalance += "<table id='operations' border = '1' align='center'>";
+                htmlBalance += "<table id='balance' border = '1' align='center'>";
                 htmlBalance += "<tr align='center'>";
                 htmlBalance += "<th width=80px>id</th>";
                 htmlBalance += "<th width=110px>debit</th>";
@@ -39,17 +39,17 @@
 
                 for (var i = 0; i < balanceList.length; i++) {
                     htmlBalance += "<tr align='center'>";
-                    htmlBalance += "<td >" + balanceList[i]["id"] + "</td>";
+                    htmlBalance += "<td>" + balanceList[i]["id"] + "</td>";
                     htmlBalance += "<td>" + balanceList[i].debit + "</td>";
                     htmlBalance += "<td>" + balanceList[i].credit + "</td>";
                     htmlBalance += "<td>" + balanceList[i].createDate + "</td>";
                     htmlBalance += "<td>" + balanceList[i]["amount"] + "</td>";
-                    htmlBalance += "<td><a href=#>delete</a></td>";
-                    htmlBalance += "<td><a href=# >edit</a></td>";
+                    htmlBalance += "<td id=\"d" + balanceList[i].id + "\"><i onclick='deleteBalance(" + balanceList[i].id + ")' class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td>";
+                    htmlBalance += "<td id=\"e" + balanceList[i].id + "\"><i onclick='editBalance(" + balanceList[i].id + ")' class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td>";
                     htmlBalance += "</tr>";
                 }
 
-                htmlBalance += "<tr>";
+                htmlBalance += "<tr align='center'>";
                 htmlBalance += "<td><i onclick='openAdd()' class=\"fa fa-plus\" aria-hidden=\"true\"></i></td>";
                 htmlBalance += "<td></br></td>";
                 htmlBalance += "<td></br></td>";
@@ -60,7 +60,194 @@
                 htmlBalance += "</tr>";
 
                 document.getElementById("wrapper").innerHTML += htmlBalance;
+            }).catch(() => {
+                console.log("Error occured");
+                alert("Your access expired or you haven't entered. Log in please.")
+                unAuthorize();
             });
+        }
+
+        async function deleteBalance(id) {
+            await fetch("http://localhost:8080/balance/id/" + id, {
+                method: "GET",
+                headers: {
+                    'Authorization': "Bearer " + localStorage.getItem("Authentication")
+                }
+            })
+                .then( (response) => {
+                    if(response.status == 403) {
+                        alert("Your token expired. Log in again.");
+                        console.log("Error occurred");
+                        unAuthorize();
+                    }else if(response.status >= 400){
+                        console.log("Error occurred");
+                        alert("Error")
+                        return Promise.reject();
+                    }
+                    return response.json();
+                }).then((j) => JSON.stringify(j))
+                .then((data) => JSON.parse(data))
+                .then((obj) => {
+                    localStorage.setItem("bamount", obj["amount"]);
+                    localStorage.setItem("bdate", obj.createDate);
+                    localStorage.setItem("bcredit", obj.credit);
+                    localStorage.setItem("bdebit", obj.debit);
+                })
+                .catch(() => console.log("Error occurred"));
+
+            if (localStorage.getItem("bcredit") == 0) {
+                await fetch("http://localhost:8080/balance/id/" + id, {
+                    method: "DELETE",
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': "Bearer " + localStorage.getItem("Authentication")
+                    }
+                }).then((response) => {
+                        if (response.status === 403) {
+                            alert("Your token was expired. Log in again.");
+                            console.log("Error occurred");
+                            return Promise.reject();
+                        } else if (response.status >= 400) {
+                            console.log("Error occurred");
+                            alert("Error")
+                            return Promise.reject();
+                        }
+                        return response.json();
+                    }).then(() => window.location.href = "./table-balance.html")
+                    .catch(() => console.log("Error occurred"));
+            } else {
+                alert("Delete balance with non-zero credit can only admin. Change role or delete all operations with this balance");
+            }
+        }
+
+        function openAdd() {
+            var htmlOP = "";
+            document.getElementById("input").innerHTML = htmlOP;
+            htmlOP += "<p align='center'>";
+            htmlOP += "<lable class='title'> Initial amount: ";
+            htmlOP += "<input id=\"amount\" class=\"textfield\" type=\"number\" min='0' >";
+            htmlOP += "</label>";
+            htmlOP += "<label class='title'> Create date: ";
+            htmlOP += "<input id=\"date\" type=\"date\" name='createDate' value=\"2018-01-01\" min=\"2018-01-01\" max=\"2021-12-31\" >";
+            htmlOP += "</label>";
+            htmlOP += "</p>";
+            htmlOP += "<p align='center'>";
+            htmlOP += " <button style width='400px' onclick='addHandler()'>Add</button>";
+            htmlOP += "</p>";
+
+            document.getElementById("input").innerHTML += htmlOP;
+        }
+
+        async function addHandler() {
+            if (localStorage.getItem("Authentication") == '' || localStorage.getItem("Authentication") == null) {
+                alert("You are not authorized");
+                localStorage.clear();
+                window.location.href = "./login.html";
+            } else {
+                var amount = document.getElementById("amount").value;
+                var create = document.getElementById("date").value;
+                if ((amount == '') || (create == '') || (isNaN(amount)) || (amount < 0)) {
+                    alert("Enter data please");
+                } else {
+                    var year = create.slice(0, 4);
+                    var month = create.slice(5, 7);
+                    var day = create.slice(8, 10);
+                    var createdate = day + "/" + month + "/" + year;
+                    if (year < 2018 || year > 2021) {
+                        alert("Inappropriate year");
+                    } else {
+                        var token = "Bearer " + localStorage.getItem("Authentication");
+                        fetch("http://localhost:8080/balance/add", {
+                            method: "POST",
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': token
+                            },
+                            body: JSON.stringify({
+                                debit: amount,
+                                credit: 0,
+                                createDate: createdate,
+                                amount: amount
+                            })
+                        }).then((response) => {
+                            if (response.status === 403) {
+                                console.log("Error occured");
+                                alert("Your access expired or you haven't entered. Log in please.");
+                                unAuthorize();
+                            } else if (response.status >= 400) {
+                                return Promise.reject();
+                            }
+                            return response.json();
+                        }).then(() => window.location.href = "./table-balance.html")
+                            .catch(() => console.log("Error occurred"));
+                    }
+                }
+            }
+        }
+
+        function searchHandler() {
+            var search = document.getElementById("searchField").value;
+            if (search == '') {
+                window.location.href = "./table-balance.html";
+            } else if (isNaN(Number(search)) || search < 1) {
+                alert("Id must be a positive integer");
+            } else {
+                fetch("http://localhost:8080/balance/id/" + id, {
+                    method: "GET",
+                    headers: {
+                        'Authorization': "Bearer " + localStorage.getItem("Authentication")
+                    }
+                }).then( (response) => {
+                    if (response.status === 404) {
+                        alert("No balance was found");
+                        return Promise.reject();
+                    }  else if (response.status === 403){
+                        console.log("Error occured");
+                        alert("Your access expired or you haven't entered. Log in please.");
+                        unAuthorize();
+                    } else if (response.status >= 400) {
+                        return Promise.reject();
+                    }
+                    return response.json();
+                }).then(function (balanceList) {
+                    var htmlBalance = "";
+                    document.getElementById("wrapper").innerHTML = htmlBalance;
+
+                    htmlBalance += "<table id='balance' border = '1' align='center'>";
+                    htmlBalance += "<tr align='center'>";
+                    htmlBalance += "<th width=80px>id</th>";
+                    htmlBalance += "<th width=110px>debit</th>";
+                    htmlBalance += "<th width=110px>credit</th>";
+                    htmlBalance += "<th width=140px>create_date</th>";
+                    htmlBalance += "<th width=110px>amount</th>";
+                    htmlBalance += "<th></br></th>";
+                    htmlBalance += "<th></br></th>";
+                    htmlBalance += "</tr>";
+
+                    htmlBalance += "<tr align='center'>";
+                    htmlBalance += "<td>" + balanceList["id"] + "</td>";
+                    htmlBalance += "<td>" + balanceList.debit + "</td>";
+                    htmlBalance += "<td>" + balanceList.credit + "</td>";
+                    htmlBalance += "<td>" + balanceList.createDate + "</td>";
+                    htmlBalance += "<td>" + balanceList["amount"] + "</td>";
+                    htmlBalance += "<td id=\"d" + balanceList.id + "\"><i onclick='deleteBalance(" + balanceList.id + ")' class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td>";
+                    htmlBalance += "<td id=\"e" + balanceList.id + "\"><i onclick='editBalance(" + balanceList.id + ")' class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td>";
+                    htmlBalance += "</tr>";
+
+
+                    htmlBalance += "<tr>";
+                    htmlBalance += "<td></br></td>";
+                    htmlBalance += "<td></br></td>";
+                    htmlBalance += "<td></br></td>";
+                    htmlBalance += "<td></br></td>";
+                    htmlBalance += "<td></br></td>";
+                    htmlBalance += "<td></br></td>";
+                    htmlBalance += "<td></br></td>";
+                    htmlBalance += "</tr>";
+
+                    document.getElementById("wrapper").innerHTML += htmlBalance;
+                }).catch(() => console.log("Error occured"));
+            }
         }
     </script>
 </head>
@@ -71,13 +258,12 @@
     </header>
     <p></p>
     <div id="wrapper"><script>getBalance();</script></div>
+    <div id="input"></div>
     <p align="center">
-        <select>
-            <option>Search by id</option>
-            <option>Search by name</option>
-        </select>
-        <input class="textfield" type="text">
-        <input value="Search" type="button" onclick="location.href='success.html'"/>
+        <label class='title'>Search by id
+            <input id="searchField" class="textfield" type="search">
+        </label>
+        <input value="Search" type="button" onclick='searchHandler()'/>
     </p>
     <form id="todo-form">
         <input value="Back" type="button" onclick="history.back();"/>

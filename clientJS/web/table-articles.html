@@ -12,7 +12,7 @@
             window.location.href = "./index.html";
         }
         
-        function getArticles() {
+        async function getArticles() {
             fetch("http://localhost:8080/articles/all", {
                 method: "GET",
                 headers: {
@@ -22,8 +22,6 @@
                 .then( (response) => {
                     if(response.status >= 400){
                         console.log("Error occured");
-                        alert("You have no access. Log in please.")
-                        localStorage.clear();
                         return Promise.reject();
                     }
                     return response.json();
@@ -43,12 +41,12 @@
                         htmlArticle += "<tr align='center'>";
                         htmlArticle += "<td>" + articlesList[i]["id"] + "</td>";
                         htmlArticle += "<td>" + articlesList[i]["name"] + "</td>";
-                        htmlArticle += "<td id=\"d" + articlesList[i].id + "\"><a href=# onclick='deleteArticle(" + articlesList[i].id +")'>delete</a></td>";
-                        htmlArticle += "<td id=\"e" + articlesList[i].id + "\"><a href=# onclick='editArticle(" + articlesList[i].id +")'>edit</a></td>";
+                        htmlArticle += "<td id=\"d" + articlesList[i].id + "\"><i onclick='deleteArticle(" + articlesList[i].id + ")' class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td>";
+                        htmlArticle += "<td id=\"e" + articlesList[i].id + "\"><i onclick='editArticle(" + articlesList[i].id + ")' class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td>";
                         htmlArticle +="</tr>";
                     }
 
-                    htmlArticle += "<tr>";
+                    htmlArticle += "<tr align='center'>";
                     htmlArticle += "<td><i onclick='openAdd()' class=\"fa fa-plus\" aria-hidden=\"true\"></i></td>";
                     htmlArticle += "<td></br></td>";
                     htmlArticle += "<td></br></td>";
@@ -56,7 +54,11 @@
                     htmlArticle += "</tr>";
 
                     document.getElementById("wrapper").innerHTML += htmlArticle;
-                });
+                }).catch(() => {
+                    console.log("Error occured");
+                    alert("Your access expired or you haven't entered. Log in please.")
+                    unAuthorize();
+            });
         }
 
         function openAdd() {
@@ -66,15 +68,15 @@
             htmlOP += "<lable class='title'> Name: ";
             htmlOP += "<input id=\"articleName\" class=\"textfield\" type=\"text\" >";
             htmlOP += "</label>";
-            htmlOP += "<button style width='400px' onclick='addHandler()'>Add</button>";
+            htmlOP += " <button style width='400px' onclick='addHandler()'>Add</button>";
             htmlOP += "</p>";
 
 
             document.getElementById("input").innerHTML += htmlOP;
         }
 
-        function addHandler() {
-            if (localStorage.getItem("Authentication") == '') {
+        async function addHandler() {
+            if (localStorage.getItem("Authentication") == '' || localStorage.getItem("Authentication") == null) {
                 alert("You are not authorized");
                 localStorage.clear();
                 window.location.href = "./login.html";
@@ -84,7 +86,7 @@
                     alert("Enter data please");
                 } else {
                     var token = "Bearer " + localStorage.getItem("Authentication");
-                    fetch("http://localhost:8080/articles/add", {
+                    await fetch("http://localhost:8080/articles/add", {
                         method: "POST",
                         headers: {
                             'Content-Type': 'application/json',
@@ -94,13 +96,16 @@
                             name : articleName
                         })
                     }).then((response) => {
-                        if (response.status >= 400) {
-                            console.log("User with this nickname doesn't exist");
+                        if (response.status === 403){
+                            console.log("Error occured");
+                            alert("Your access expired or you haven't entered. Log in please.");
+                            unAuthorize();
+                        } else if (response.status >= 400) {
                             return Promise.reject();
                         }
                         return response.json();
                     }).then(() => window.location.href = "./table-articles.html")
-                        .catch(() => alert("User with this nickname doesn't exist"));
+                        .catch(() => console.log("Error occurred"));
                 }
             }
         }
@@ -113,24 +118,24 @@
         }
 
         function deleteArticle(id) {
-            alert(id);
-            fetch("http://localhost:8080/id/" + id, {
+            fetch("http://localhost:8080/articles/id/" + id, {
                 method: "DELETE",
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authentication': "Bearer :" + localStorage.getItem("Authentication")
+                    'Authorization': "Bearer " + localStorage.getItem("Authentication")
                 }
-            })
-                .then( (response) => {
-                    if(response.status >= 400){
-                        console.log("Error occured");
-                        alert("You have no access. Log in please.")
-                        //localStorage.clear();
+            }).then( (response) => {
+                    if(response.status === 403) {
+                        alert("Only ADMIN can delete articles. If you are ADMIN than your token was expired. Log in again.");
+                        console.log("Error occurred");
+                        return Promise.reject();
+                    }else if(response.status >= 400){
+                        console.log("Error occurred");
+                        alert("Error")
                         return Promise.reject();
                     }
                     return response.json();
-                });
-            window.location.href = "./table-articles.html";
+                }).then( () => window.location.href = "./table-articles.html")
+                .catch(() => console.log("Error occurred"));
         }
 
         function editArticle(id) {
@@ -151,8 +156,8 @@
             <option value="id">Search by id</option>
             <option value="name">Search by name</option>
         </select>
-        <input class="textfield" id="searchField" type="text">
-        <input value="Search" type="button" onclick=searchHandler()/>
+        <input class="textfield" id="searchField" type="search">
+        <input value="Search" type="button" onclick=searchHandler() />
     </p>
     <form id="todo-form">
         <input value="Back" type="button" onclick="history.back();"/>
