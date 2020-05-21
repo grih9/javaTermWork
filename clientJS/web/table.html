@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>Table</title>
     <link rel="stylesheet" href="css/app.css">
+    <script src="https://use.fontawesome.com/57d67c497b.js"></script>
     <script language="JavaScript">
         function unAuthorize() {
             localStorage.clear();
@@ -32,7 +33,7 @@
 
                 htmlOperations += "<table id='operations' border = '1' align='center'>";
                 htmlOperations += "<tr align='center'>";
-                htmlOperations += "<th>id</th>";
+                htmlOperations += "<th width=80px>id</th>";
                 htmlOperations += "<th width=130px><a href=\"table-articles.html\">article_id</a></th>";
                 htmlOperations += "<th width=110px>debit</th>";
                 htmlOperations += "<th width=110px>credit</th>";
@@ -50,13 +51,13 @@
                     htmlOperations += "<td>" + operationsList[i].credit + "</td>";
                     htmlOperations += "<td>" + operationsList[i].createDate + "</td>";
                     htmlOperations += "<td>" + operationsList[i].balance.id + "</td>";
-                    htmlOperations += "<td id=\"d" + operationsList[i].id + "\"><a href=# onclick='deleteOperation(" + operationsList[i].id + ")'>delete</a></td>";
-                    htmlOperations += "<td id=\"e" + operationsList[i].id + "\"><a href=# onclick='editOperation(" + operationsList[i].id + ")'>edit</a></td>";
+                    htmlOperations += "<td id=\"d" + operationsList[i].id + "\"><i onclick='deleteOperation(" + operationsList[i].id + ")' class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td>";
+                    htmlOperations += "<td id=\"e" + operationsList[i].id + "\"><i onclick='editOperation(" + operationsList[i].id + ")' class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td>";
                     htmlOperations += "</tr>";
                 }
 
                 htmlOperations += "<tr>";
-                htmlOperations += "<td><a href=# onclick='openAdd()'>+</a></td>";
+                htmlOperations += "<td align='center'><i onclick='openAdd()' class=\"fa fa-plus\" aria-hidden=\"true\"></i></td>";
                 htmlOperations += "<td></br></td>";
                 htmlOperations += "<td></br></td>";
                 htmlOperations += "<td></br></td>";
@@ -110,7 +111,7 @@
                     htmlOperations += "<option value=\"" + balanceList[i].id + "\">id:" + balanceList[i].id + " amount:" + balanceList[i]["amount"]+ "</option>";
                 }
                 htmlOperations += "</select>"
-                htmlOperations += "<button style width='400x' onclick='addHandler()'>Add</button>";
+                htmlOperations += "<button style width=400px onclick='addHandler()'>Add</button>";
                 htmlOperations += "</p>";
 
 
@@ -126,7 +127,7 @@
                 }
             }).then((response) => {
                 if (response.status === 404) {
-                    alert("Article is not found");
+                    console.log("Article is not found");
                     return Promise.reject();
                 } else if (response.status >= 400) {
                     alert("You have no access. Log in please.")
@@ -135,14 +136,14 @@
                 return response.json();
             }).then((j) => JSON.stringify(j))
                 .then((data) => JSON.parse(data))
-                .then((obj) => localStorage.setItem("aid", obj["id"]))
+                .then((obj) => {
+                    localStorage.setItem("aid", obj["id"]);
+                })
                 .catch(() => console.log("Error occured"));
 
-            alert("aid is");
-            alert(localStorage.getItem("aid"));
         }
 
-        async function getBalanceAmount(id) {
+        async function getBalanceInfo(id) {
             await fetch("http://localhost:8080/balance/id/" + id, {
                 method: "GET",
                 headers: {
@@ -150,7 +151,7 @@
                 }
             }).then((response) => {
                 if (response.status === 404) {
-                    alert("Balance is not found");
+                    console.log("Balance is not found");
                     return Promise.reject();
                 } else if (response.status >= 400) {
                     alert("You have no access. Log in please.")
@@ -166,15 +167,6 @@
                     localStorage.setItem("bdebit", obj.debit);
                 })
                 .catch(() => console.log("Error occured"));
-
-            alert("bamount is");
-            alert(localStorage.getItem("bamount"));
-            alert("bdate is");
-            alert(localStorage.getItem("bdate"));
-            alert("bdebit is");
-            alert(localStorage.getItem("bdebit"));
-            alert("bcredit is");
-            alert(localStorage.getItem("bcredit"));
         }
 
         async function addNewArticle(articleName) {
@@ -194,8 +186,7 @@
                     return Promise.reject();
                 }
                 return response.json();
-            }).then(() => alert("article ok"))
-                .catch(() => alert("User with this nickname doesn't exist"));
+            }).catch(() => alert("User with this nickname doesn't exist"));
 
         }
 
@@ -218,12 +209,10 @@
                     console.log("User with this nickname doesn't exist");
                     return Promise.reject();
                 }
-                alert(localStorage.getItem("bid"));
                 return response.json();
             }).then((j) => JSON.stringify(j))
                 .then((data) => JSON.parse(data))
                 .then((obj) => localStorage.setItem("bid", obj["id"]))
-                .then(() => alert("balance ok"))
                 .catch(() => alert("User with this nickname doesn't exist"));
         }
 
@@ -247,10 +236,8 @@
                     console.log("User with this nickname doesn't exist");
                     return Promise.reject();
                 }
-                alert(localStorage.getItem("bid"));
                 return response.json();
-            }).then(() => alert("balance ok"))
-                .catch(() => alert("User with this nickname doesn't exist"));
+            }).catch(() => alert("User with this nickname doesn't exist"));
         }
 
         async function addHandler() {
@@ -291,10 +278,8 @@
                                     return;
                                 }
                             } else {
-                                await getBalanceAmount(localStorage.getItem("bid"));
+                                await getBalanceInfo(localStorage.getItem("bid"));
                                 amount += Number(localStorage.getItem("bamount"));
-                                alert("amount is");
-                                alert(amount);
                                 if (amount < 0) {
                                     alert("Amount can't be less than zero");
                                     return;
@@ -317,12 +302,10 @@
                             await getArticleByName(articleName);
 
                             if (localStorage.getItem("aid") == '' || localStorage.getItem("aid") == null) {
-                                alert("newArticle");
                                 await addNewArticle(articleName);
                                 await getArticleByName(articleName);
                             }
                             if (localStorage.getItem("bid") == '' || localStorage.getItem("bid") == null) {
-                                alert("newBalance");
                                 await addNewBalance(deb, cred, createdate, amount);
                             }
 
@@ -372,10 +355,183 @@
             }
         }
 
+        function getOperationByID(id) {
+            fetch("http://localhost:8080/operations/id/" + id, {
+                method: "GET",
+                headers: {
+                    'Authorization': "Bearer " + localStorage.getItem("Authentication")
+                }
+            }).then( (response) => {
+                if (response.status == 404) {
+                    alert("No operations has found");
+                    return Promise.reject();
+                } else if (response.status >= 400) {
+                    console.log("Error occured");
+                    alert("You have no access. Log in please.")
+                    localStorage.clear();
+                    return Promise.reject();
+                }
+                return response.json();
+            }).then(function (operationsList) {
+                var htmlOperations = "";
+                document.getElementById("wrapper").innerHTML = htmlOperations;
+
+                htmlOperations += "<table id='operations' border = '1' align='center'>";
+                htmlOperations += "<tr align='center'>";
+                htmlOperations += "<th width=80px>id</th>";
+                htmlOperations += "<th width=130px><a href=\"table-articles.html\">article_id</a></th>";
+                htmlOperations += "<th width=110px>debit</th>";
+                htmlOperations += "<th width=110px>credit</th>";
+                htmlOperations += "<th width=140px>create_date</th>";
+                htmlOperations += "<th width=130px><a href=\"table-balance.html\">balance_id</a></th>";
+                htmlOperations += "</tr>";
+
+                htmlOperations += "<tr align='center'>";
+                htmlOperations += "<td>" + operationsList.id + "</td>";
+                htmlOperations += "<td>" + operationsList.article.id + "</td>";
+                htmlOperations += "<td>" + operationsList.debit + "</td>";
+                htmlOperations += "<td>" + operationsList.credit + "</td>";
+                htmlOperations += "<td>" + operationsList.createDate + "</td>";
+                htmlOperations += "<td>" + operationsList.balance.id + "</td>";
+                htmlOperations += "</tr>";
+
+
+                htmlOperations += "<tr>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "</tr>";
+
+                document.getElementById("wrapper").innerHTML += htmlOperations;
+            });
+        }
+
+        function getOperationsByArticleId(id) {
+            fetch("http://localhost:8080/operations/article/" + id, {
+                method: "GET",
+                headers: {
+                    'Authorization': "Bearer " + localStorage.getItem("Authentication")
+                }
+            }).then( (response) => {
+                if (response.status == 404) {
+                    alert("No operations has found");
+                    return Promise.reject();
+                } else if (response.status >= 400) {
+                    console.log("Error occured");
+                    alert("You have no access. Log in please.")
+                    localStorage.clear();
+                    return Promise.reject();
+                }
+                return response.json();
+            }).then(function (operationsList) {
+                var htmlOperations = "";
+                document.getElementById("wrapper").innerHTML = htmlOperations;
+
+                htmlOperations += "<table id='operations' border = '1' align='center'>";
+                htmlOperations += "<tr align='center'>";
+                htmlOperations += "<th width=80px>id</th>";
+                htmlOperations += "<th width=130px><a href=\"table-articles.html\">article_id</a></th>";
+                htmlOperations += "<th width=110px>debit</th>";
+                htmlOperations += "<th width=110px>credit</th>";
+                htmlOperations += "<th width=140px>create_date</th>";
+                htmlOperations += "<th width=130px><a href=\"table-balance.html\">balance_id</a></th>";
+                htmlOperations += "</tr>";
+
+                for (var i = 0; i < operationsList.length; i++) {
+                    htmlOperations += "<tr align='center'>";
+                    htmlOperations += "<td>" + operationsList[i].id + "</td>";
+                    htmlOperations += "<td>" + operationsList[i].article.id + "</td>";
+                    htmlOperations += "<td>" + operationsList[i].debit + "</td>";
+                    htmlOperations += "<td>" + operationsList[i].credit + "</td>";
+                    htmlOperations += "<td>" + operationsList[i].createDate + "</td>";
+                    htmlOperations += "<td>" + operationsList[i].balance.id + "</td>";
+                    htmlOperations += "</tr>";
+                }
+
+                htmlOperations += "<tr>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "</tr>";
+
+                document.getElementById("wrapper").innerHTML += htmlOperations;
+            });
+        }
+
+        function getOperationsByBalanceId(id) {
+            fetch("http://localhost:8080/operations/balance/" + id, {
+                method: "GET",
+                headers: {
+                    'Authorization': "Bearer " + localStorage.getItem("Authentication")
+                }
+            }).then( (response) => {
+                if (response.status == 404) {
+                    alert("No operations has found");
+                    return Promise.reject();
+                } else if (response.status >= 400) {
+                    console.log("Error occured");
+                    alert("You have no access. Log in please.")
+                    localStorage.clear();
+                    return Promise.reject();
+                }
+                return response.json();
+            }).then(function (operationsList) {
+                var htmlOperations = "";
+                document.getElementById("wrapper").innerHTML = htmlOperations;
+
+                htmlOperations += "<table id='operations' border = '1' align='center'>";
+                htmlOperations += "<tr align='center'>";
+                htmlOperations += "<th width=80px>id</th>";
+                htmlOperations += "<th width=130px><a href=\"table-articles.html\">article_id</a></th>";
+                htmlOperations += "<th width=110px>debit</th>";
+                htmlOperations += "<th width=110px>credit</th>";
+                htmlOperations += "<th width=140px>create_date</th>";
+                htmlOperations += "<th width=130px><a href=\"table-balance.html\">balance_id</a></th>";
+                htmlOperations += "</tr>";
+
+                for (var i = 0; i < operationsList.length; i++) {
+                    htmlOperations += "<tr align='center'>";
+                    htmlOperations += "<td>" + operationsList[i].id + "</td>";
+                    htmlOperations += "<td>" + operationsList[i].article.id + "</td>";
+                    htmlOperations += "<td>" + operationsList[i].debit + "</td>";
+                    htmlOperations += "<td>" + operationsList[i].credit + "</td>";
+                    htmlOperations += "<td>" + operationsList[i].createDate + "</td>";
+                    htmlOperations += "<td>" + operationsList[i].balance.id + "</td>";
+                    htmlOperations += "</tr>";
+                }
+
+                htmlOperations += "<tr>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "<td></br></td>";
+                htmlOperations += "</tr>";
+
+                document.getElementById("wrapper").innerHTML += htmlOperations;
+            });
+        }
+
         function searchHandler() {
             var search = document.getElementById("searchField").value;
+            var selected = document.getElementById("selecter").value;
             if (search == '') {
                 window.location.href = "./table.html";
+            } else if (isNaN(Number(search)) || search < 1) {
+                alert("Id must be a positive integer");
+            } else if (selected == "byId") {
+                getOperationByID(search);
+            } else if (selected == "byArticleId") {
+                getOperationsByArticleId(search);
+            } else if (selected == "byBalanceId") {
+                getOperationsByBalanceId(search);
             }
         }
     </script>
@@ -390,10 +546,11 @@
     <div id="input"></div>
     <p align="center">
         <select id="selecter">
-            <option>Search by id</option>
-            <option>Search by name</option>
+            <option value="byId">Search by id</option>
+            <option value="byArticleId">Search by articleId</option>
+            <option value="byBalanceId">Search by balanceId</option>
         </select>
-        <input id="searchField" class="textfield" type="text">
+        <input id="searchField" min="0" class="textfield" type="text">
         <input value="Search" type="button" onclick='searchHandler()'/>
     </p>
     <form id="todo-form">

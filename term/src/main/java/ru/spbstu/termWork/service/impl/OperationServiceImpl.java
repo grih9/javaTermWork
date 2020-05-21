@@ -69,7 +69,7 @@ public class OperationServiceImpl implements OperationService {
     @Override
     public List<Operation> findOperationByBalance(Balance balance) {
         List<Operation> operations = operationRepository.findOperationByBalance(balance);
-        if (operations.size() > 0) {
+        if (operations.size() != 0) {
             return operations;
         } else {
             throw new OperationNotFoundException("Operation is not found by balance_id");
@@ -79,7 +79,7 @@ public class OperationServiceImpl implements OperationService {
     @Override
     public List<Operation> findOperationByArticle(Article article) {
         List<Operation> operations = operationRepository.findOperationByArticle(article);
-        if (operations.size() > 0) {
+        if (operations.size() != 0) {
             return operations;
         } else {
             throw new OperationNotFoundException("Operation is not found by article_id");

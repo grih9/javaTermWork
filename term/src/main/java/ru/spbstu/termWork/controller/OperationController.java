@@ -8,6 +8,8 @@ import org.springframework.web.server.ResponseStatusException;
 import ru.spbstu.termWork.entity.Article;
 import ru.spbstu.termWork.entity.Balance;
 import ru.spbstu.termWork.entity.Operation;
+import ru.spbstu.termWork.exception.ArticleNotFoundException;
+import ru.spbstu.termWork.exception.BalanceNotFoundException;
 import ru.spbstu.termWork.exception.OperationNotFoundException;
 import ru.spbstu.termWork.service.ArticleService;
 import ru.spbstu.termWork.service.BalanceService;
@@ -46,20 +48,20 @@ public class OperationController {
 
     @GetMapping("/balance/{id}")
     public ResponseEntity<List<Operation>> getOperationByBalanceId(@PathVariable("id") Long id) {
-        Balance balance = balanceService.findBalance(id);
         try {
+            Balance balance = balanceService.findBalance(id);
             return new ResponseEntity<>(operationService.findOperationByBalance(balance), HttpStatus.OK);
-        } catch (OperationNotFoundException e) {
+        } catch (BalanceNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
 
     @GetMapping("/article/{id}")
     public ResponseEntity<List<Operation>> getOperationByArticleId(@PathVariable("id") Long id) {
-        Article article = articleService.findArticles(id);
         try {
+            Article article = articleService.findArticles(id);
             return new ResponseEntity<>(operationService.findOperationByArticle(article), HttpStatus.OK);
-        } catch (OperationNotFoundException e) {
+        } catch (ArticleNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }

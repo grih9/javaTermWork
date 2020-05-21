@@ -55,6 +55,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter implement
                 .antMatchers(HttpMethod.OPTIONS, "/*/add").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/*/name/{name}").permitAll()
                 .antMatchers(HttpMethod.OPTIONS, "/*/id/{id}").permitAll()
+                .antMatchers(HttpMethod.OPTIONS, "/operations/article/{id}").permitAll()
+                .antMatchers(HttpMethod.OPTIONS, "/operations/balance/{id}").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtSecurityConfigurer(jwtTokenProvider));
