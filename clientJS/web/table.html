@@ -403,6 +403,7 @@
                 return response.json();
             }).then(function (operationsList) {
                 var htmlOperations = "";
+                document.getElementById("input").innerHTML = htmlOperations;
                 document.getElementById("wrapper").innerHTML = htmlOperations;
 
                 htmlOperations += "<table id='operations' border = '1' align='center'>";
@@ -424,8 +425,8 @@
                 htmlOperations += "<td>" + operationsList.credit + "</td>";
                 htmlOperations += "<td>" + operationsList.createDate + "</td>";
                 htmlOperations += "<td>" + operationsList.balance.id + "</td>";
-                htmlOperations += "<td id=\"d" + operationsList[i].id + "\"><i onclick='deleteOperation(" + operationsList[i].id + ")' class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td>";
-                htmlOperations += "<td id=\"e" + operationsList[i].id + "\"><i onclick='editOperation(" + operationsList[i].id + ")' class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td>";
+                htmlOperations += "<td id=\"d" + operationsList.id + "\"><i onclick='deleteOperation(" + operationsList.id + ")' class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td>";
+                htmlOperations += "<td id=\"e" + operationsList.id + "\"><i onclick='editOperation(" + operationsList.id + ")' class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td>";
                 htmlOperations += "</tr>";
 
 
@@ -464,6 +465,7 @@
                 return response.json();
             }).then(function (operationsList) {
                 var htmlOperations = "";
+                document.getElementById("input").innerHTML = htmlOperations;
                 document.getElementById("wrapper").innerHTML = htmlOperations;
 
                 htmlOperations += "<table id='operations' border = '1' align='center'>";
@@ -526,6 +528,7 @@
                 return response.json();
             }).then(function (operationsList) {
                 var htmlOperations = "";
+                document.getElementById("input").innerHTML = htmlOperations;
                 document.getElementById("wrapper").innerHTML = htmlOperations;
 
                 htmlOperations += "<table id='operations' border = '1' align='center'>";
@@ -583,6 +586,112 @@
                 getOperationsByBalanceId(search);
             }
         }
+
+        async function deleteOperation(id) {
+            await fetch("http://localhost:8080/operations/id/" + id, {
+                method: "GET",
+                headers: {
+                    'Authorization': "Bearer " + localStorage.getItem("Authentication")
+                }
+            }).then( (response) => {
+                if(response.status === 403) {
+                    alert("Your token was expired. Log in again.");
+                    console.log("Error occurred");
+                    unAuthorize();
+                }else if(response.status >= 400){
+                    console.log("Error occurred");
+                    alert("Error")
+                    return Promise.reject();
+                }
+                return response.json();
+            }).then( (operation) => {
+                localStorage.setItem("odebit", operation.debit);
+                localStorage.setItem("ocredit", operation.credit);
+                localStorage.setItem("bid", operation.balance.id);
+            }).catch(() => console.log("Error occurred"));
+
+            getBalanceInfo(localStorage.getItem("bid"));
+
+            await fetch("http://localhost:8080/operations/id/" + id, {
+                method: "DELETE",
+                headers: {
+                    'Authorization': "Bearer " + localStorage.getItem("Authentication")
+                }
+            }).then( (response) => {
+                if(response.status === 403) {
+                    alert("Your token was expired. Log in again.");
+                    console.log("Error occurred");
+                    unAuthorize();
+                }else if(response.status >= 400){
+                    console.log("Error occurred");
+                    alert("Error")
+                    return Promise.reject();
+                }
+                return response;
+            }).then( () => {
+                var amount = Number(localStorage.getItem("bamount")) - Number(localStorage.getItem("odebit")) + Number(localStorage.getItem("ocredit"));
+                var credit = Number(localStorage.getItem("bcredit")) - Number(localStorage.getItem("ocredit"));
+                var debit = Number(localStorage.getItem("bdebit")) - Number(localStorage.getItem("odebit"));
+                updateBalance(Number(localStorage.getItem("bid")), debit, credit, localStorage.getItem("bdate"), amount);
+                window.location.href = "./table.html";
+            }).catch(() => console.log("Error occurred"));
+        }
+
+        async function openEdit() {
+            var htmlOperations = "";
+            document.getElementById("input").innerHTML = htmlOperations;
+            htmlOperations += "<p align='center'>";
+            htmlOperations += "<lable class='title'> Article: ";
+            htmlOperations += "<input id=\"article\" class=\"textfield\" type=\"text\" placeholder=\""+ localStorage.getItem("oarticle") +"\">";
+            htmlOperations += "</label>";
+            htmlOperations += "<lable class='title'> Credit: ";
+            htmlOperations += "<input id=\"credit\" class=\"textfield\" type=\"number\" min='0' placeholder=\""+ localStorage.getItem("ocredit") +"\">";
+            htmlOperations += "</label>";
+            htmlOperations += "</p>";
+            htmlOperations += "<p align='center'>";
+            htmlOperations += "<lable class='title'>  Debit: ";
+            htmlOperations += "<input id=\"debit\" class=\"textfield\" type=\"number\" min='0' placeholder=\""+ localStorage.getItem("odebit") +"\">"
+            htmlOperations += "</label>";
+            htmlOperations += "<label class='title'> Create date: ";
+            htmlOperations += "<input id=\"date\" type=\"date\" name='createDate' value=\"2018-01-01\" min=\"2018-01-01\" max=\"2021-12-31\" >";
+            htmlOperations += "</label>";
+            htmlOperations += "</p>";
+            htmlOperations += "<p align='center'>";
+            htmlOperations += " <button style width=400px onclick='editHandler()'>EDIT</button>";
+            htmlOperations += "</p>";
+
+            document.getElementById("input").innerHTML += htmlOperations;
+        }
+
+        async function editOperation(id) {
+            await fetch("http://localhost:8080/operations/id/" + id, {
+                method: "GET",
+                headers: {
+                    'Authorization': "Bearer " + localStorage.getItem("Authentication")
+                }
+            }).then( (response) => {
+                if(response.status === 403) {
+                    alert("Your token was expired. Log in again.");
+                    console.log("Error occurred");
+                    unAuthorize();
+                }else if(response.status >= 400){
+                    console.log("Error occurred");
+                    alert("Error")
+                    return Promise.reject();
+                }
+                return response.json();
+            }).then( (operation) => {
+                localStorage.setItem("oarticle", operation.article.name);
+                localStorage.setItem("odebit", operation.debit);
+                localStorage.setItem("ocredit", operation.credit);
+                localStorage.setItem("ocreateDebit", operation.createDate);
+                localStorage.setItem("bid", operation.balance.id);
+                localStorage.setItem("bdate", operation.balance.createDate);
+            }).catch(() => console.log("Error occurred"));
+            openEdit();
+        }
+
+
     </script>
 </head>
 <body>

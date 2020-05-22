@@ -124,18 +124,24 @@
                     'Authorization': "Bearer " + localStorage.getItem("Authentication")
                 }
             }).then( (response) => {
+                    alert("ok");
                     if(response.status === 403) {
                         alert("Only ADMIN can delete articles. If you are ADMIN than your token was expired. Log in again.");
                         console.log("Error occurred");
+                        return Promise.reject();
+                    }else if(response.status === 500){
+                        console.log("Error linked");
+                        alert("You can't delete this article because it is linked to some opertaion. Delete operation first.");
                         return Promise.reject();
                     }else if(response.status >= 400){
                         console.log("Error occurred");
                         alert("Error")
                         return Promise.reject();
                     }
-                    return response.json();
-                }).then( () => window.location.href = "./table-articles.html")
-                .catch(() => console.log("Error occurred"));
+                    return response;
+                }).then( () => {
+                    window.location.href = "./table-articles.html";
+            }).catch(() => console.log("Error occurred"));
         }
 
         function editArticle(id) {

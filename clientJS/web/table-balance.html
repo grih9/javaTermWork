@@ -81,7 +81,7 @@
                         unAuthorize();
                     }else if(response.status >= 400){
                         console.log("Error occurred");
-                        alert("Error")
+                        alert("Unexpecte error while getting")
                         return Promise.reject();
                     }
                     return response.json();
@@ -109,14 +109,14 @@
                             return Promise.reject();
                         } else if (response.status >= 400) {
                             console.log("Error occurred");
-                            alert("Error")
+                            alert("Unexpected error while deleting")
                             return Promise.reject();
                         }
-                        return response.json();
+                        return response;
                     }).then(() => window.location.href = "./table-balance.html")
                     .catch(() => console.log("Error occurred"));
             } else {
-                alert("Delete balance with non-zero credit can only admin. Change role or delete all operations with this balance");
+                alert("You can't delete balance with non-zero credit. Firstly, delete all operations with this balance");
             }
         }
 
@@ -147,7 +147,7 @@
                 var amount = document.getElementById("amount").value;
                 var create = document.getElementById("date").value;
                 if ((amount == '') || (create == '') || (isNaN(amount)) || (amount < 0)) {
-                    alert("Enter data please");
+                    alert("Amount must be non-negative number");
                 } else {
                     var year = create.slice(0, 4);
                     var month = create.slice(5, 7);
@@ -211,6 +211,7 @@
                     return response.json();
                 }).then(function (balanceList) {
                     var htmlBalance = "";
+                    document.getElementById("input").innerHTML += htmlBalance;
                     document.getElementById("wrapper").innerHTML = htmlBalance;
 
                     htmlBalance += "<table id='balance' border = '1' align='center'>";
