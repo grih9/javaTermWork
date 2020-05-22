@@ -24,7 +24,7 @@
             fetch("http://localhost:8080/balance/all")
                 .then((response) => {
                     if (response.status >= 400) {
-                        console.log("Error occured");
+                        console.log("Error occurred");
                         alert("You have no access. Log in please.")
                         localStorage.clear();
                         return Promise.reject();
@@ -43,6 +43,16 @@
                 htmlBalance += "<th width=105px>amount</th>";
                 htmlBalance += "</tr>";
 
+                if (balanceList.length === 0) {
+                    htmlBalance += "<tr>";
+                    htmlBalance+= "<td></br></td>";
+                    htmlBalance+= "<td></br></td>";
+                    htmlBalance+= "<td></br></td>";
+                    htmlBalance+= "<td></br></td>";
+                    htmlBalance+= "<td></br></td>";
+                    htmlBalance += "</tr>";
+                }
+
                 for (var i = 0; i < balanceList.length; i++) {
                     htmlBalance += "<tr align='center'>";
                     htmlBalance += "<td>" + balanceList[i]["id"] + "</td>";
@@ -57,7 +67,7 @@
 
                 document.getElementById("wrapper").innerHTML += htmlBalance;
             }).catch(() => {
-                console.log("Error occured");
+                console.log("Error occurred");
                 alert("Your access expired or you haven't entered. Log in please.")
                 unAuthorize();
             });

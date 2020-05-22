@@ -24,7 +24,7 @@
             fetch("http://localhost:8080/operations/all")
                 .then( (response) => {
                     if(response.status >= 400){
-                        console.log("Error occured");
+                        console.log("Error occurred");
                         return Promise.reject();
                     }
                     return response.json();
@@ -42,6 +42,17 @@
                 htmlOperations += "<th width=105px><a href=\"table-balanceview.html\">balance_id</a></th>";
                 htmlOperations += "</tr>";
 
+                if (operationsList.length === 0) {
+                    htmlOperations += "<tr>";
+                    htmlOperations += "<td></br></td>";
+                    htmlOperations += "<td></br></td>";
+                    htmlOperations += "<td></br></td>";
+                    htmlOperations += "<td></br></td>";
+                    htmlOperations += "<td></br></td>";
+                    htmlOperations += "<td></br></td>";
+                    htmlOperations += "</tr>";
+                }
+
                 for (var i = 0; i < operationsList.length; i++) {
                     htmlOperations += "<tr align='center'>";
                     htmlOperations += "<td>" + operationsList[i].id + "</td>";
@@ -57,7 +68,7 @@
 
                 document.getElementById("wrapper").innerHTML += htmlOperations;
             }).catch(() => {
-                console.log("Error occured");
+                console.log("Error occurred");
                 alert("Your access expired or you haven't entered. Log in please.")
                 unAuthorize();
             });

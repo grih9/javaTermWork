@@ -51,7 +51,7 @@ public class OperationController {
         try {
             Balance balance = balanceService.findBalance(id);
             return new ResponseEntity<>(operationService.findOperationByBalance(balance), HttpStatus.OK);
-        } catch (BalanceNotFoundException e) {
+        } catch (OperationNotFoundException | BalanceNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }
@@ -61,7 +61,7 @@ public class OperationController {
         try {
             Article article = articleService.findArticles(id);
             return new ResponseEntity<>(operationService.findOperationByArticle(article), HttpStatus.OK);
-        } catch (ArticleNotFoundException e) {
+        } catch (OperationNotFoundException | ArticleNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         }
     }

@@ -21,7 +21,7 @@
             })
                 .then( (response) => {
                     if(response.status >= 400){
-                        console.log("Error occured");
+                        console.log("Error occurred");
                         return Promise.reject();
                     }
                     return response.json();
@@ -68,7 +68,7 @@
 
                 document.getElementById("wrapper").innerHTML += htmlOperations;
             }).catch(() => {
-                console.log("Error occured");
+                console.log("Error occurred");
                 alert("Your access expired or you haven't entered. Log in please.")
                 unAuthorize();
             });
@@ -82,7 +82,7 @@
                 }
             }).then( (response) => {
                 if (response.status >= 400) {
-                    console.log("Error occured");
+                    console.log("Error occurred");
                     return Promise.reject();
                 }
                 return response.json();
@@ -117,7 +117,7 @@
 
                 document.getElementById("input").innerHTML += htmlOperations;
             }).catch(() => {
-                console.log("Error occured");
+                console.log("Error occurred");
                 alert("Your access expired or you haven't entered. Log in please.")
                 unAuthorize();
             });
@@ -134,7 +134,7 @@
                     console.log("Article is not found");
                     return Promise.reject();
                 } else if (response.status === 403){
-                    console.log("Error occured");
+                    console.log("Error occurred");
                     alert("Your access expired or you haven't entered. Log in please.");
                     unAuthorize();
                 } else if (response.status >= 400) {
@@ -161,7 +161,7 @@
                     console.log("Balance is not found");
                     return Promise.reject();
                 } else if (response.status === 403){
-                    console.log("Error occured");
+                    console.log("Error occurred");
                     alert("Your access expired or you haven't entered. Log in please.")
                     unAuthorize();
                 } else if (response.status >= 400) {
@@ -176,7 +176,7 @@
                     localStorage.setItem("bcredit", obj.credit);
                     localStorage.setItem("bdebit", obj.debit);
                 })
-                .catch(() => console.log("Error occured"));
+                .catch(() => console.log("Error occurred"));
         }
 
         async function addNewArticle(articleName) {
@@ -192,7 +192,7 @@
                 })
             }).then((response) => {
                 if (response.status === 403){
-                    console.log("Error occured");
+                    console.log("Error occurred");
                     alert("Your access expired or you haven't entered. Log in please.")
                     unAuthorize();
                 } else if (response.status >= 400) {
@@ -249,7 +249,7 @@
                 })
             }).then((response) => {
                 if (response.status === 403){
-                    console.log("Error occured");
+                    console.log("Error occurred");
                     alert("Your access expired or you haven't entered. Log in please.");
                     unAuthorize();
                 } else if (response.status >= 400) {
@@ -357,7 +357,7 @@
                                 })
                             }).then((response) => {
                                 if (response.status === 403){
-                                    console.log("Error occured");
+                                    console.log("Error occurred");
                                     alert("Your access expired or you haven't entered. Log in please.");
                                     unAuthorize();
                                 } else if (response.status >= 400) {
@@ -396,7 +396,7 @@
                     alert("No operations were found");
                     return Promise.reject();
                 }  else if (response.status === 403){
-                    console.log("Error occured");
+                    console.log("Error occurred");
                     alert("Your access expired or you haven't entered. Log in please.");
                     unAuthorize();
                 } else if (response.status >= 400) {
@@ -459,7 +459,7 @@
                     alert("No operations were found");
                     return Promise.reject();
                 } else if (response.status === 403){
-                    console.log("Error occured");
+                    console.log("Error occurred");
                     alert("Your access expired or you haven't entered. Log in please.");
                     unAuthorize();
                 } else if (response.status >= 400) {
@@ -520,10 +520,10 @@
                 }
             }).then( (response) => {
                 if (response.status === 404) {
-                    alert("No opertaions were found");
+                    alert("No operations were found");
                     return Promise.reject();
                 } else if (response.status === 403){
-                    console.log("Error occured");
+                    console.log("Error occurred");
                     alert("Your access expired or you haven't entered. Log in please.");
                     unAuthorize();
                 } else if (response.status >= 400) {
@@ -573,7 +573,7 @@
                 htmlOperations += "</table>";
 
                 document.getElementById("wrapper").innerHTML += htmlOperations;
-            }).catch(() => console.log("Error occured"));
+            }).catch(() => console.log("Error occurred"));
         }
 
         function searchHandler() {
@@ -704,7 +704,7 @@
                     alert("Create date is not entered");
                 } else {
                     if ((isNaN(deb)) || (isNaN(cred)) || deb < 0 || cred < 0) {
-                        alert("Inappropriate data. Debit and credit are nonnegative numbers");
+                        alert("Inappropriate data. Debit and credit are non negative numbers");
                     } else if (deb === 0 && cred === 0) {
                         alert("Inappropriate data. Debit and credit can't be both null");
                     } else if (Number(localStorage.getItem("bamount")) + deb - cred -
@@ -770,7 +770,7 @@
                                 })
                             }).then((response) => {
                                 if (response.status === 403) {
-                                    console.log("Error occured");
+                                    console.log("Error occurred");
                                     alert("Your access expired or you haven't entered. Log in please.");
                                     unAuthorize();
                                 } else if (response.status >= 400) {

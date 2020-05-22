@@ -21,7 +21,7 @@
             })
                 .then( (response) => {
                     if(response.status >= 400){
-                        console.log("Error occured");
+                        console.log("Error occurred");
                         return Promise.reject();
                     }
                     return response.json();
@@ -32,7 +32,7 @@
                     htmlArticle += "<table id='articles' border = '1' align='center'>";
                     htmlArticle += "<tr align='center'>";
                     htmlArticle += "<th width='80px'>id</th>";
-                    htmlArticle += "<th width='140px'>name</th>";
+                    htmlArticle += "<th width='190px'>name</th>";
                     htmlArticle += "<th></br></th>"
                     htmlArticle += "<th></br></th>"
                     htmlArticle += "</tr>";
@@ -56,7 +56,7 @@
 
                     document.getElementById("wrapper").innerHTML += htmlArticle;
                 }).catch(() => {
-                    console.log("Error occured");
+                    console.log("Error occurred");
                     alert("Your access expired or you haven't entered. Log in please.")
                     unAuthorize();
             });
@@ -98,12 +98,12 @@
                         })
                     }).then((response) => {
                         if (response.status === 403) {
-                            console.log("Error occured");
+                            console.log("Error occurred");
                             alert("Your access expired or you haven't entered. Log in please.");
                             unAuthorize();
                         } else if (response.status === 500) {
-                            console.log("Error occured");
-                            alert("Article with this name has already been created. Change name");
+                            console.log("Error occurred");
+                            alert("Article with this name has already been created. Change name please");
                             return Promise.reject();
                         } else if (response.status >= 400) {
                             return Promise.reject();
@@ -142,7 +142,7 @@
                 htmlArticle += "<table id='articles' border = '1' align='center'>";
                 htmlArticle += "<tr align='center'>";
                 htmlArticle += "<th width='80px'>id</th>";
-                htmlArticle += "<th width='140px'>name</th>";
+                htmlArticle += "<th width='190px'>name</th>";
                 htmlArticle += "<th></br></th>"
                 htmlArticle += "<th></br></th>"
                 htmlArticle += "</tr>";
@@ -163,7 +163,7 @@
                 htmlArticle += "</table>";
 
                 document.getElementById("wrapper").innerHTML += htmlArticle;
-            }).catch(() => console.log("Error occured"));
+            }).catch(() => console.log("Error occurred"));
         }
 
         function getArticleByName(name) {
@@ -192,7 +192,7 @@
                 htmlArticle += "<table id='articles' border = '1' align='center'>";
                 htmlArticle += "<tr align='center'>";
                 htmlArticle += "<th width='80px'>id</th>";
-                htmlArticle += "<th width='140px'>name</th>";
+                htmlArticle += "<th width='190px'>name</th>";
                 htmlArticle += "<th></br></th>"
                 htmlArticle += "<th></br></th>"
                 htmlArticle += "</tr>";
@@ -213,7 +213,7 @@
                 htmlArticle += "</table>";
 
                 document.getElementById("wrapper").innerHTML += htmlArticle;
-            }).catch(() => console.log("Error occured"));
+            }).catch(() => console.log("Error occurred"));
         }
 
         function searchHandler() {
@@ -240,12 +240,12 @@
                 }
             }).then( (response) => {
                     if(response.status === 403) {
-                        alert("Only ADMIN can delete articles. If you are ADMIN than your token was expired. Log in again.");
+                        alert("Your token was expired or you haven't entered. Log in again please.");
                         console.log("Error occurred");
                         return Promise.reject();
                     }else if(response.status === 500){
                         console.log("Error linked");
-                        alert("You can't delete this article because it is linked to some opertaion. Delete operation first.");
+                        alert("You can't delete this article because it is linked to some operation. Delete operation first.");
                         return Promise.reject();
                     }else if(response.status >= 400){
                         console.log("Error occurred");
@@ -269,7 +269,7 @@
                     alert("No articles were found");
                     return Promise.reject();
                 } else if (response.status === 403){
-                    console.log("Error occured");
+                    console.log("Error occurred");
                     alert("Your access expired or you haven't entered. Log in please.");
                     unAuthorize();
                 } else if (response.status >= 400) {
@@ -309,11 +309,11 @@
                 })
             }).then((response) => {
                 if (response.status === 403) {
-                    console.log("Error occured");
-                    alert("Only admin can edit articles. If you are admin than your token is expired. Log in please.");
+                    console.log("Error occurred");
+                    alert("Only ADMIN can edit articles. If you are ADMIN than your token is expired. Log in please.");
                 } else if (response.status === 500) {
                     console.log("Error occured");
-                    alert("Article with this name has already been created. Change name");
+                    alert("Article with this name has already been created. Change name please");
                     return Promise.reject();
                 } else if (response.status >= 400) {
                     alert("Unexpected error");

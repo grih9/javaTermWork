@@ -316,7 +316,7 @@
             htmlBalance += "</label>";
             htmlBalance += " <button style width=400px onclick='editHandler()'>EDIT</button>";
             htmlBalance += "</p>";
-            
+
             document.getElementById("input").innerHTML += htmlBalance;
         }
         
@@ -334,14 +334,14 @@
                     var day = create.slice(8, 10);
                     createDate = day + "/" + month + "/" + year;
                     if (Number(year) > Number(localStorage.getItem("maxdate").slice(0, 4))) {
-                        alert("Inapropiate year. Operation date can't be older than balance date");
+                        alert("Inappropriate year. Operation date can't be older than balance date");
                         return;
                     } else if (Number(year) === Number(localStorage.getItem("maxdate").slice(0, 4)) && Number(month) > Number(localStorage.getItem("maxdate").slice(5, 7))) {
-                        alert("Inapropiate month. Operation date can't be older than balance date");
+                        alert("Inappropriate month. Operation date can't be older than balance date");
                         return;
                     } else if (Number(year) === Number(localStorage.getItem("maxdate").slice(0, 4)) && Number(month) === Number(localStorage.getItem("maxdate").slice(5, 7))
                         && Number(day) > Number(localStorage.getItem("maxdate").slice(8, 10))) {
-                        alert("Inapropiate day. Operation date can't be older than balance date");
+                        alert("Inappropriate day. Operation date can't be older than balance date");
                         return;
                     }
                 }
@@ -361,7 +361,7 @@
                     })
                 }).then((response) => {
                     if (response.status === 403) {
-                        console.log("Error occured");
+                        console.log("Error occurred");
                         alert("Your access expired or you haven't entered. Log in please.");
                         unAuthorize();
                     } else if (response.status >= 400) {
