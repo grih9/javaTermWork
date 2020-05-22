@@ -8,7 +8,7 @@
         function submitLogin() {
             var username = document.getElementById("userName").value;
             var pass = document.getElementById("password").value;
-            if((username == '') || (pass == '')){
+            if((username.replace(/\s+/g, ' ').trim() == '') || (pass.replace(/\s+/g, ' ').trim() == '')){
                 alert("Enter data please");
             } else {
                 fetch("http://localhost:8080/auth/signIn", {

@@ -41,7 +41,7 @@ public class ArticleController {
         }
     }
 
-    @GetMapping(value = "/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/all")
     public ResponseEntity<List<Article>> getAllArticles() {
         List<Article> list = articleService.articlesList();
         return new ResponseEntity<>(list, HttpStatus.OK);

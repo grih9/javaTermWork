@@ -24,23 +24,22 @@
         function getArticles() {
             fetch("http://localhost:8080/articles/all")
                 .then( (response) => {
-                    if(response.status >= 400){
+                    if (response.status >= 400) {
                         console.log("Error occured");
-                        alert("You have no access. Log in please.")
+                        alert("You have no access. Log in please.");
                         localStorage.clear();
                         return Promise.reject();
                     }
-                    return response.json();
+                    return response.json()
                 }).then(function (articlesList) {
-
                 var htmlArticle = "";
+                document.getElementById("wrapper").innerHTML = htmlArticle;
 
                 htmlArticle += "<table id='articles' border = '1' align='center'>";
                 htmlArticle += "<tr align='center'>";
-                htmlArticle += "<th>id</th>";
-                htmlArticle += "<th>name</th>";
+                htmlArticle += "<th width='80px'>id</th>";
+                htmlArticle += "<th width='140px'>name</th>";
                 htmlArticle += "</tr>";
-
                 if (articlesList.length === 0) {
                     htmlArticle += "<tr>";
                     htmlArticle += "<td></br></td>";
@@ -48,13 +47,14 @@
                     htmlArticle += "</tr>";
                 }
 
-                for(var i = 0; i < articlesList.length; i++){
+                for (var i = 0; i < articlesList.length; i++) {
                     htmlArticle += "<tr align='center'>";
                     htmlArticle += "<td>" + articlesList[i].id + "</td>";
                     htmlArticle += "<td>" + articlesList[i].name + "</td>";
-
-                    htmlArticle +="</tr>";
+                    htmlArticle += "</tr>";
                 }
+
+                htmlArticle += "</table>";
 
                 document.getElementById("wrapper").innerHTML += htmlArticle;
             });

@@ -52,6 +52,7 @@
                     htmlArticle += "<td></br></td>";
                     htmlArticle += "<td></br></td>";
                     htmlArticle += "</tr>";
+                    htmlArticle += "</table>";
 
                     document.getElementById("wrapper").innerHTML += htmlArticle;
                 }).catch(() => {
@@ -82,7 +83,7 @@
                 window.location.href = "./login.html";
             } else {
                 var articleName = document.getElementById("articleName").value;
-                if (articleName == '') {
+                if (articleName.replace(/\s+/g, ' ').trim() == '') {
                     alert("Enter data please");
                 } else {
                     var token = "Bearer " + localStorage.getItem("Authentication");
@@ -96,10 +97,14 @@
                             name : articleName
                         })
                     }).then((response) => {
-                        if (response.status === 403){
+                        if (response.status === 403) {
                             console.log("Error occured");
                             alert("Your access expired or you haven't entered. Log in please.");
                             unAuthorize();
+                        } else if (response.status === 500) {
+                            console.log("Error occured");
+                            alert("Article with this name has already been created. Change name");
+                            return Promise.reject();
                         } else if (response.status >= 400) {
                             return Promise.reject();
                         }
@@ -110,10 +115,120 @@
             }
         }
 
+        function getArticleById(id) {
+            fetch("http://localhost:8080/articles/id/" + id, {
+                method: "GET",
+                headers: {
+                    'Authorization': "Bearer " + localStorage.getItem("Authentication")
+                }
+            }).then( (response) => {
+                if (response.status === 404) {
+                    alert("No articles were found");
+                    return Promise.reject();
+                } else if (response.status === 403){
+                    console.log("Error occured");
+                    alert("Your access expired or you haven't entered. Log in please.");
+                    unAuthorize();
+                } else if (response.status >= 400) {
+                    alert("Unexpected error");
+                    return Promise.reject();
+                }
+                return response.json();
+            }).then(function (article) {
+                var htmlArticle = "";
+                document.getElementById("wrapper").innerHTML = htmlArticle;
+                document.getElementById("input").innerHTML = htmlArticle;
+
+                htmlArticle += "<table id='articles' border = '1' align='center'>";
+                htmlArticle += "<tr align='center'>";
+                htmlArticle += "<th width='80px'>id</th>";
+                htmlArticle += "<th width='140px'>name</th>";
+                htmlArticle += "<th></br></th>"
+                htmlArticle += "<th></br></th>"
+                htmlArticle += "</tr>";
+
+                htmlArticle += "<tr align='center'>";
+                htmlArticle += "<td>" + article["id"] + "</td>";
+                htmlArticle += "<td>" + article["name"] + "</td>";
+                htmlArticle += "<td id=\"d" + article.id + "\"><i onclick='deleteArticle(" + article.id + ")' class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td>";
+                htmlArticle += "<td id=\"e" + article.id + "\"><i onclick='editArticle(" + article.id + ")' class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td>";
+                htmlArticle +="</tr>";
+
+                htmlArticle += "<tr align='center'>";
+                htmlArticle += "<td><i onclick='openAdd()' class=\"fa fa-plus\" aria-hidden=\"true\"></i></td>";
+                htmlArticle += "<td></br></td>";
+                htmlArticle += "<td></br></td>";
+                htmlArticle += "<td></br></td>";
+                htmlArticle += "</tr>";
+                htmlArticle += "</table>";
+
+                document.getElementById("wrapper").innerHTML += htmlArticle;
+            }).catch(() => console.log("Error occured"));
+        }
+
+        function getArticleByName(name) {
+            fetch("http://localhost:8080/articles/name/" + name, {
+                method: "GET",
+                headers: {
+                    'Authorization': "Bearer " + localStorage.getItem("Authentication")
+                }
+            }).then( (response) => {
+                if (response.status === 404) {
+                    alert("No articles were found");
+                    return Promise.reject();
+                } else if (response.status === 403){
+                    console.log("Error occured");
+                    alert("Your access expired or you haven't entered. Log in please.");
+                    unAuthorize();
+                } else if (response.status >= 400) {
+                    return Promise.reject();
+                }
+                return response.json();
+            }).then(function (article) {
+                var htmlArticle = "";
+                document.getElementById("wrapper").innerHTML = htmlArticle;
+                document.getElementById("input").innerHTML = htmlArticle;
+
+                htmlArticle += "<table id='articles' border = '1' align='center'>";
+                htmlArticle += "<tr align='center'>";
+                htmlArticle += "<th width='80px'>id</th>";
+                htmlArticle += "<th width='140px'>name</th>";
+                htmlArticle += "<th></br></th>"
+                htmlArticle += "<th></br></th>"
+                htmlArticle += "</tr>";
+
+                htmlArticle += "<tr align='center'>";
+                htmlArticle += "<td>" + article["id"] + "</td>";
+                htmlArticle += "<td>" + article["name"] + "</td>";
+                htmlArticle += "<td id=\"d" + article.id + "\"><i onclick='deleteArticle(" + article.id + ")' class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td>";
+                htmlArticle += "<td id=\"e" + article.id + "\"><i onclick='editArticle(" + article.id + ")' class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td>";
+                htmlArticle +="</tr>";
+
+                htmlArticle += "<tr align='center'>";
+                htmlArticle += "<td><i onclick='openAdd()' class=\"fa fa-plus\" aria-hidden=\"true\"></i></td>";
+                htmlArticle += "<td></br></td>";
+                htmlArticle += "<td></br></td>";
+                htmlArticle += "<td></br></td>";
+                htmlArticle += "</tr>";
+                htmlArticle += "</table>";
+
+                document.getElementById("wrapper").innerHTML += htmlArticle;
+            }).catch(() => console.log("Error occured"));
+        }
+
         function searchHandler() {
             var search = document.getElementById("searchField").value;
-            if (search == '') {
+            var selected = document.getElementById("selecter").value;
+            if (search.replace(/\s+/g, ' ').trim() == '') {
                 window.location.href = "./table-articles.html";
+            } else if (selected == "id") {
+                if (isNaN(Number(search)) || !Number.isInteger(Number(search)) || Number(search) < 1) {
+                    alert("Id must be a positive integer");
+                } else {
+                    getArticleById(Number(search));
+                }
+            } else if (selected == "name") {
+                getArticleByName(search);
             }
         }
 
@@ -124,7 +239,6 @@
                     'Authorization': "Bearer " + localStorage.getItem("Authentication")
                 }
             }).then( (response) => {
-                    alert("ok");
                     if(response.status === 403) {
                         alert("Only ADMIN can delete articles. If you are ADMIN than your token was expired. Log in again.");
                         console.log("Error occurred");
@@ -145,7 +259,69 @@
         }
 
         function editArticle(id) {
-            alert(id);
+            fetch("http://localhost:8080/articles/id/" + id, {
+                method: "GET",
+                headers: {
+                    'Authorization': "Bearer " + localStorage.getItem("Authentication")
+                }
+            }).then( (response) => {
+                if (response.status === 404) {
+                    alert("No articles were found");
+                    return Promise.reject();
+                } else if (response.status === 403){
+                    console.log("Error occured");
+                    alert("Your access expired or you haven't entered. Log in please.");
+                    unAuthorize();
+                } else if (response.status >= 400) {
+                    alert("Unexpected error");
+                    return Promise.reject();
+                }
+                return response.json();
+            }).then(function (article) {
+                var htmlOP = "";
+                document.getElementById("input").innerHTML = htmlOP;
+                htmlOP += "<p align='center'>";
+                htmlOP += "<lable class='title'> Name: ";
+                htmlOP += "<input id=\"articleName\" class=\"textfield\" type=\"text\" placeholder=\""+ article.name +"\">";
+                htmlOP += "</label>";
+                htmlOP += " <button style width='400px' onclick='editHandler("+ article.id +", \"" + article.name + "\")'>EDIT</button>";
+                htmlOP += "</p>";
+
+                document.getElementById("input").innerHTML += htmlOP;
+            });
+        }
+
+        async function editHandler(id, name) {
+            var editName = document.getElementById("articleName").value;
+
+            if (editName.replace(/\s+/g, ' ').trim() == '') {
+                editName = name;
+            }
+            await fetch("http://localhost:8080/articles/id/" + id, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': "Bearer " + localStorage.getItem("Authentication")
+                },
+                body: JSON.stringify({
+                    id: id,
+                    name: editName
+                })
+            }).then((response) => {
+                if (response.status === 403) {
+                    console.log("Error occured");
+                    alert("Only admin can edit articles. If you are admin than your token is expired. Log in please.");
+                } else if (response.status === 500) {
+                    console.log("Error occured");
+                    alert("Article with this name has already been created. Change name");
+                    return Promise.reject();
+                } else if (response.status >= 400) {
+                    alert("Unexpected error");
+                    return Promise.reject();
+                }
+                return response;
+            }).then(() => window.location.href = "./table-articles.html")
+                .catch(() => console.log("Error occurred"))
         }
     </script>
 </head>
@@ -158,7 +334,7 @@
     <div id="wrapper"><script>getArticles();</script></div>
     <div id="input"></div>
     <p align="center">
-        <select>
+        <select id="selecter">
             <option value="id">Search by id</option>
             <option value="name">Search by name</option>
         </select>

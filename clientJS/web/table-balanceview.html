@@ -19,6 +19,49 @@
                 window.location.href = "./login.html";
             }
         }
+
+        function getBalance() {
+            fetch("http://localhost:8080/balance/all")
+                .then((response) => {
+                    if (response.status >= 400) {
+                        console.log("Error occured");
+                        alert("You have no access. Log in please.")
+                        localStorage.clear();
+                        return Promise.reject();
+                    }
+                    return response.json();
+                }).then(function (balanceList) {
+
+                var htmlBalance = "";
+
+                htmlBalance += "<table id='balance' border = '1' align='center'>";
+                htmlBalance += "<tr align='center'>";
+                htmlBalance += "<th width=80px>id</th>";
+                htmlBalance += "<th width=105px>debit</th>";
+                htmlBalance += "<th width=105px>credit</th>";
+                htmlBalance += "<th width=110px>create_date</th>";
+                htmlBalance += "<th width=105px>amount</th>";
+                htmlBalance += "</tr>";
+
+                for (var i = 0; i < balanceList.length; i++) {
+                    htmlBalance += "<tr align='center'>";
+                    htmlBalance += "<td>" + balanceList[i]["id"] + "</td>";
+                    htmlBalance += "<td>" + balanceList[i].debit + "</td>";
+                    htmlBalance += "<td>" + balanceList[i].credit + "</td>";
+                    htmlBalance += "<td>" + balanceList[i].createDate + "</td>";
+                    htmlBalance += "<td>" + balanceList[i]["amount"] + "</td>";
+                    htmlBalance += "</tr>";
+                }
+
+                htmlBalance += "</table>";
+
+                document.getElementById("wrapper").innerHTML += htmlBalance;
+            }).catch(() => {
+                console.log("Error occured");
+                alert("Your access expired or you haven't entered. Log in please.")
+                unAuthorize();
+            });
+        }
     </script>
 </head>
 <body>
@@ -27,22 +70,9 @@
         <h1>Balance Table</h1>
     </header>
     <p></p>
-    <table border = "1" align="center">
-        <tr>
-            <th>id</th>
-            <th>credit_date</th>
-            <th>debit</th>
-            <th>credit</th>
-            <th>ammount</th>
-        </tr>
-        <tr>
-            <td><br></td>
-            <td><br></td>
-            <td><br></td>
-            <td><br></td>
-            <td><br></td>
-        </tr>
-    </table>
+    <div id="wrapper"> <script>
+        getBalance();
+    </script></div>
     <p></p>
     <form id="todo-form">
         <input value="Back" type="button" onclick="history.back();"/>

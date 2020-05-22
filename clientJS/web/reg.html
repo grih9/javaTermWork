@@ -11,7 +11,7 @@
             var pass = document.getElementById("password").value;
             var passConfirm = document.getElementById("confirmPassword").value;
             var checkBoxValue = document.getElementById("checkBox").checked;
-            if((username == '') || (pass == '') || (passConfirm == '')) {
+            if((username.replace(/\s+/g, ' ').trim() == '') || (pass.replace(/\s+/g, ' ').trim() == '') || (passConfirm.replace(/\s+/g, ' ').trim() == '')) {
                 alert("Enter data please");
             } else if (!checkBoxValue) {
                 alert("Please confirm that entered data is correct");
