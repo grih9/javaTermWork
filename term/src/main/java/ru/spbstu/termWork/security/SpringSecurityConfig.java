@@ -66,7 +66,6 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter implement
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:63342")
                 .allowedOrigins("null")
                 .allowedMethods("*");
     }

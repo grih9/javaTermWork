@@ -3,13 +3,13 @@ package ru.spbstu.termWork.service.Impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
-import ru.spbstu.termWork.entity.Article;
 import ru.spbstu.termWork.entity.Balance;
-import ru.spbstu.termWork.entity.Operation;
 import ru.spbstu.termWork.exception.BalanceNotFoundException;
 import ru.spbstu.termWork.repository.BalanceRepository;
 import ru.spbstu.termWork.service.BalanceService;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,6 +55,15 @@ public class BalanceServiceImpl implements BalanceService {
 
     @Override
     public List<Balance> balanceList() {
-        return (List<Balance>) balanceRepository.findAll();
+        return findAllByOrderByCreateDateAsc();
+    }
+
+    @Override
+    public List<Balance> findAllByOrderByCreateDateAsc() {
+        List<Balance> balances = balanceRepository.findAllByOrderByCreateDateAsc();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        balances.sort((s1, s2) -> LocalDate.parse(s1.getCreateDate(), formatter).
+                compareTo(LocalDate.parse(s2.getCreateDate(), formatter)));
+        return balances;
     }
 }

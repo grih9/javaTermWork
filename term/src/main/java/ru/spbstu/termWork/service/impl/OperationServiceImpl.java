@@ -12,6 +12,8 @@ import ru.spbstu.termWork.repository.BalanceRepository;
 import ru.spbstu.termWork.repository.OperationRepository;
 import ru.spbstu.termWork.service.OperationService;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,7 +65,16 @@ public class OperationServiceImpl implements OperationService {
 
     @Override
     public List<Operation> operationsList() {
-        return (List<Operation>) operationRepository.findAll();
+        return findAllByOrderByCreateDateAsc();
+    }
+
+    @Override
+    public List<Operation> findAllByOrderByCreateDateAsc() {
+        List<Operation> operations = operationRepository.findAllByOrderByCreateDateAsc();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        operations.sort((s1, s2) -> LocalDate.parse(s1.getCreateDate(), formatter).
+                compareTo(LocalDate.parse(s2.getCreateDate(), formatter)));
+        return operations;
     }
 
     @Override

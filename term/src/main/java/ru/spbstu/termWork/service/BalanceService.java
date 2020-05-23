@@ -12,4 +12,5 @@ public interface BalanceService {
     Balance findBalance(Long id);
     Balance update(Balance balance);
     List<Balance> balanceList();
+    List<Balance> findAllByOrderByCreateDateAsc();
 }

@@ -5,46 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
     <title>Registration</title>
     <link rel="stylesheet" href="css/app.css">
-    <script language="JavaScript">
-        function submitReg() {
-            var username = document.getElementById("userName").value;
-            var pass = document.getElementById("password").value;
-            var passConfirm = document.getElementById("confirmPassword").value;
-            var checkBoxValue = document.getElementById("checkBox").checked;
-            if((username.replace(/\s+/g, ' ').trim() == '') || (pass.replace(/\s+/g, ' ').trim() == '') || (passConfirm.replace(/\s+/g, ' ').trim() == '')) {
-                alert("Enter data please");
-            } else if (!checkBoxValue) {
-                alert("Please confirm that entered data is correct");
-            } else if(pass !== passConfirm) {
-                alert("Passwords don't match");
-            } else {
-                fetch("http://localhost:8080/auth/signUp", {
-                    method: "POST",
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        userName: username,
-                        password: pass
-                    })
-                })
-                    .then( (response) => {
-                        if(response.status >= 400){
-                            console.log("User with this nickname exists");
-                            return Promise.reject();
-                        }
-                        return response.json();
-                    }).then( () => alert("New user created successfully. Now please log in"))
-                    .then( () => localStorage.clear() )
-                    .then( () => window.location.href = "./login.html" )
-                    .catch( () => alert("User with this nickname exists"));
-            }
-        }
-        function clickCheckBox() {
-            document.getElementById("checkBox").checked = !document.getElementById("checkBox").checked;
-
-        }
-    </script>
+    <script src="js/reg.js"></script>
 </head>
 <body>
 <main id="app">
@@ -52,13 +13,13 @@
         <h1>Registration</h1>
     </header>
     <p align="center">
-        <input id="userName"  class="textfield" type="text" placeholder="username">
-        <input id="password"  class="textfield" type="password" PLACEHOLDER="password">
-        <input id="confirmPassword"  class="textfield" type="password" PLACEHOLDER="confirm password">
+        <input id="userName" class="textfield" type="text" placeholder="username">
+        <input id="password" class="textfield" type="password" placeholder="password">
+        <input id="confirmPassword" class="textfield" type="password" placeholder="confirm password">
     </p>
         <ul id="todo-list">
             <li class="todo-item">
-                <input id="checkBox" class="checkbox"  type="checkbox">
+                <input id="checkBox" class="checkbox" type="checkbox">
                 <label onclick="clickCheckBox()" class="title">I confirm that the entered data is correct</label>
             </li>
         </ul>
