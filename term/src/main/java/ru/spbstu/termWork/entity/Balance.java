@@ -2,7 +2,6 @@ package ru.spbstu.termWork.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.security.Timestamp;
 import java.util.Objects;
 
 @Entity

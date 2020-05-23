@@ -4,8 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import ru.spbstu.termWork.entity.Article;
-import ru.spbstu.termWork.entity.Balance;
-import ru.spbstu.termWork.entity.Operation;
 import ru.spbstu.termWork.exception.ArticleNotFoundException;
 import ru.spbstu.termWork.repository.ArticleRepository;
 import ru.spbstu.termWork.service.ArticleService;

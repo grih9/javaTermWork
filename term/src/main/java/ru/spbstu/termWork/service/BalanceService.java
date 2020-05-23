@@ -1,8 +1,6 @@
 package ru.spbstu.termWork.service;
 
-import ru.spbstu.termWork.entity.Article;
 import ru.spbstu.termWork.entity.Balance;
-import ru.spbstu.termWork.entity.Operation;
 
 import java.util.List;
 

@@ -3,7 +3,6 @@ package ru.spbstu.termWork.service;
 import ru.spbstu.termWork.entity.Article;
 import ru.spbstu.termWork.entity.Balance;
 import ru.spbstu.termWork.entity.Operation;
-import ru.spbstu.termWork.repository.OperationRepository;
 
 import java.util.List;
 
