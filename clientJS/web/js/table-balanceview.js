@@ -29,8 +29,8 @@ function getBalance() {
         htmlBalance += "<table id='balance' border = '1' align='center'>";
         htmlBalance += "<tr align='center'>";
         htmlBalance += "<th width=80px>id</th>";
-        htmlBalance += "<th width=105px>debit</th>";
-        htmlBalance += "<th width=105px>credit</th>";
+        htmlBalance += "<th width=95px>debit</th>";
+        htmlBalance += "<th width=95px>credit</th>";
         htmlBalance += "<th width=110px>create_date</th>";
         htmlBalance += "<th width=105px>amount</th>";
         htmlBalance += "</tr>";

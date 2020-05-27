@@ -28,9 +28,9 @@ function getOperations() {
         htmlOperations += "<table id='operations' border = '1' align='center'>";
         htmlOperations += "<tr align='center'>";
         htmlOperations += "<th width=80px>id</th>";
-        htmlOperations += "<th width=105px><a href=\"table-articlesview.html\">article_id</a></th>";
-        htmlOperations += "<th width=105px>debit</th>";
-        htmlOperations += "<th width=105px>credit</th>";
+        htmlOperations += "<th width=120px><a href=\"table-articlesview.html\">article_id</a></th>";
+        htmlOperations += "<th width=95px>debit</th>";
+        htmlOperations += "<th width=95px>credit</th>";
         htmlOperations += "<th width=110px>create_date</th>";
         htmlOperations += "<th width=105px><a href=\"table-balanceview.html\">balance_id</a></th>";
         htmlOperations += "</tr>";
@@ -43,13 +43,14 @@ function getOperations() {
             htmlOperations += "<td></br></td>";
             htmlOperations += "<td></br></td>";
             htmlOperations += "<td></br></td>";
+            htmlOperations += "<td></br></td>";
             htmlOperations += "</tr>";
         }
 
         for (var i = 0; i < operationsList.length; i++) {
             htmlOperations += "<tr align='center'>";
             htmlOperations += "<td>" + operationsList[i].id + "</td>";
-            htmlOperations += "<td>" + operationsList[i].article.id + "</td>";
+            htmlOperations += "<td>" + operationsList[i].article.id + " (" + operationsList[i].article.name + ")" + "</td>";
             htmlOperations += "<td>" + operationsList[i].debit + "</td>";
             htmlOperations += "<td>" + operationsList[i].credit + "</td>";
             htmlOperations += "<td>" + operationsList[i].createDate + "</td>";

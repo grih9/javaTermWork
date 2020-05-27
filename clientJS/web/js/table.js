@@ -3,6 +3,7 @@ function unAuthorize() {
     window.location.href = "./index.html";
 }
 
+
 async function getOperations() {
     fetch("http://localhost:8080/operations/all", {
         method: "GET",
@@ -23,9 +24,9 @@ async function getOperations() {
         htmlOperations += "<table id='operations' border = '1' align='center'>";
         htmlOperations += "<tr align='center'>";
         htmlOperations += "<th width=80px>id</th>";
-        htmlOperations += "<th width=105px><a href=\"table-articles.html\">article_id</a></th>";
-        htmlOperations += "<th width=105px>debit</th>";
-        htmlOperations += "<th width=105px>credit</th>";
+        htmlOperations += "<th width=120px><a href=\"table-articles.html\">article_id</a></th>";
+        htmlOperations += "<th width=95px>debit</th>";
+        htmlOperations += "<th width=95px>credit</th>";
         htmlOperations += "<th width=110px>create_date</th>";
         htmlOperations += "<th width=105px><a href=\"table-balance.html\">balance_id</a></th>";
         htmlOperations += "<th></br></th>"
@@ -35,7 +36,7 @@ async function getOperations() {
         for (var i = 0; i < operationsList.length; i++) {
             htmlOperations += "<tr align='center'>";
             htmlOperations += "<td>" + operationsList[i].id + "</td>";
-            htmlOperations += "<td>" + operationsList[i].article.id + "</td>";
+            htmlOperations += "<td>" + operationsList[i].article.id + "(" + operationsList[i].article.name + ")" + "</td>";
             htmlOperations += "<td>" + operationsList[i].debit + "</td>";
             htmlOperations += "<td>" + operationsList[i].credit + "</td>";
             htmlOperations += "<td>" + operationsList[i].createDate + "</td>";
@@ -402,9 +403,9 @@ function getOperationByID(id) {
         htmlOperations += "<table id='operations' border = '1' align='center'>";
         htmlOperations += "<tr align='center'>";
         htmlOperations += "<th width=80px>id</th>";
-        htmlOperations += "<th width=105px><a href=\"table-articles.html\">article_id</a></th>";
-        htmlOperations += "<th width=105px>debit</th>";
-        htmlOperations += "<th width=105px>credit</th>";
+        htmlOperations += "<th width=120px><a href=\"table-articles.html\">article_id</a></th>";
+        htmlOperations += "<th width=95px>debit</th>";
+        htmlOperations += "<th width=95px>credit</th>";
         htmlOperations += "<th width=110px>create_date</th>";
         htmlOperations += "<th width=105px><a href=\"table-balance.html\">balance_id</a></th>";
         htmlOperations += "<th></br></th>";
@@ -413,7 +414,7 @@ function getOperationByID(id) {
         htmlOperations += "</tr>";
         htmlOperations += "<tr align='center'>";
         htmlOperations += "<td>" + operationsList.id + "</td>";
-        htmlOperations += "<td>" + operationsList.article.id + "</td>";
+        htmlOperations += "<td>" + operationsList.article.id + " (" + operationsList[i].article.name + ")" + "</td>";
         htmlOperations += "<td>" + operationsList.debit + "</td>";
         htmlOperations += "<td>" + operationsList.credit + "</td>";
         htmlOperations += "<td>" + operationsList.createDate + "</td>";
@@ -465,9 +466,9 @@ function getOperationsByArticleId(id) {
         htmlOperations += "<table id='operations' border = '1' align='center'>";
         htmlOperations += "<tr align='center'>";
         htmlOperations += "<th width=80px>id</th>";
-        htmlOperations += "<th width=105px><a href=\"table-articles.html\">article_id</a></th>";
-        htmlOperations += "<th width=105px>debit</th>";
-        htmlOperations += "<th width=105px>credit</th>";
+        htmlOperations += "<th width=120px><a href=\"table-articles.html\">article_id</a></th>";
+        htmlOperations += "<th width=95px>debit</th>";
+        htmlOperations += "<th width=95px>credit</th>";
         htmlOperations += "<th width=110px>create_date</th>";
         htmlOperations += "<th width=105px><a href=\"table-balance.html\">balance_id</a></th>";
         htmlOperations += "<th></th>";
@@ -477,7 +478,7 @@ function getOperationsByArticleId(id) {
         for (var i = 0; i < operationsList.length; i++) {
             htmlOperations += "<tr align='center'>";
             htmlOperations += "<td>" + operationsList[i].id + "</td>";
-            htmlOperations += "<td>" + operationsList[i].article.id + "</td>";
+            htmlOperations += "<td>" + operationsList[i].article.id + " (" + operationsList[i].article.name + ")" + "</td>";
             htmlOperations += "<td>" + operationsList[i].debit + "</td>";
             htmlOperations += "<td>" + operationsList[i].credit + "</td>";
             htmlOperations += "<td>" + operationsList[i].createDate + "</td>";
@@ -529,9 +530,9 @@ function getOperationsByBalanceId(id) {
         htmlOperations += "<table id='operations' border = '1' align='center'>";
         htmlOperations += "<tr align='center'>";
         htmlOperations += "<th width=80px>id</th>";
-        htmlOperations += "<th width=105px><a href=\"table-articles.html\">article_id</a></th>";
-        htmlOperations += "<th width=105px>debit</th>";
-        htmlOperations += "<th width=105px>credit</th>";
+        htmlOperations += "<th width=120px><a href=\"table-articles.html\">article_id</a></th>";
+        htmlOperations += "<th width=95px>debit</th>";
+        htmlOperations += "<th width=95px>credit</th>";
         htmlOperations += "<th width=110px>create_date</th>";
         htmlOperations += "<th width=105px><a href=\"table-balance.html\">balance_id</a></th>";
         htmlOperations += "<th></th>";
@@ -541,7 +542,7 @@ function getOperationsByBalanceId(id) {
         for (var i = 0; i < operationsList.length; i++) {
             htmlOperations += "<tr align='center'>";
             htmlOperations += "<td>" + operationsList[i].id + "</td>";
-            htmlOperations += "<td>" + operationsList[i].article.id + "</td>";
+            htmlOperations += "<td>" + operationsList[i].article.id + " (" + operationsList[i].article.name + ")" + "</td>";
             htmlOperations += "<td>" + operationsList[i].debit + "</td>";
             htmlOperations += "<td>" + operationsList[i].credit + "</td>";
             htmlOperations += "<td>" + operationsList[i].createDate + "</td>";
@@ -636,8 +637,8 @@ async function deleteOperation(id) {
 async function openEdit() {
     var htmlOperations = "";
     document.getElementById("input").innerHTML = htmlOperations;
-    htmlOperations += "<p align='center'>";
-    htmlOperations += "<lable class='title'> Article: ";
+    htmlOperations += "<p align='center'>" +
+        "<lable class='title'> Article: ";
     htmlOperations += "<input id=\"article\" class=\"textfield\" type=\"text\" placeholder=\"" + localStorage.getItem("oarticle") + "\">";
     htmlOperations += "</label>";
     htmlOperations += "<lable class='title'> Credit: ";
