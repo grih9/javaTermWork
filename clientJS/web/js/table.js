@@ -97,10 +97,10 @@ async function openAdd() {
         htmlOperations += "<input id=\"date\" type=\"date\" name='createDate' value=\"2018-01-01\" min=\"2018-01-01\" max=\"2021-12-31\" >";
         htmlOperations += "</label>";
         htmlOperations += "<lable class='title'> Article: ";
-        htmlOperations += "<select id='balance'>"
-        htmlOperations += "<option value=''></option>";
+        htmlOperations += "<select id='article'>"
+        htmlOperations += "<option value=' '></option>";
         for (var i = 0; i < articlesList.length; i++) {
-            htmlOperations += "<option value=\"" + articlesList[i].id + "\">" + articlesList[i].name + "</option>";
+            htmlOperations += "<option value=\"" + articlesList[i].name + "\">" + articlesList[i].name + "</option>";
         }
         htmlOperations += "</select>"
         htmlOperations += "</label>";
@@ -128,10 +128,10 @@ async function openAdd() {
         var htmlOperations = "";
         htmlOperations += "<p align='center'>";
         htmlOperations += "<select id='balance'>"
-        htmlOperations += "<option value='new'>Add new balance</option>";
         for (var i = 0; i < balanceList.length; i++) {
             htmlOperations += "<option value=\"" + balanceList[i].id + "\">id:" + balanceList[i].id + " amount:" + balanceList[i]["amount"]+ "</option>";
         }
+        htmlOperations += "<option value='new'>Add new balance</option>";
         htmlOperations += "</select>"
         htmlOperations += " <button style width=400px onclick='addHandler()'>Add</button>";
         htmlOperations += "</p>";
@@ -199,30 +199,6 @@ async function getBalanceInfo(id) {
         })
         .catch(() => console.log("Error occurred"));
 }
-
-// async function addNewArticle(articleName) {
-//     var token = "Bearer " + localStorage.getItem("Authentication");
-//     await fetch("http://localhost:8080/articles/add", {
-//         method: "POST",
-//         headers: {
-//             'Content-Type': 'application/json',
-//             'Authorization': token
-//         },
-//         body: JSON.stringify({
-//             name: articleName
-//         })
-//     }).then((response) => {
-//         if (response.status === 403){
-//             console.log("Error occurred");
-//             alert("Your access expired or you haven't entered. Log in please.")
-//             unAuthorize();
-//         } else if (response.status >= 400) {
-//             return Promise.reject();
-//         }
-//         return response.json();
-//     }).catch(() => console.log("Error occurred"));
-//
-// }
 
 async function addNewBalance(deb, cred, createDate, amount) {
     var token = "Bearer " + localStorage.getItem("Authentication");
@@ -314,7 +290,6 @@ async function addHandler() {
                     alert("Inappropriate year");
                 } else {
                     var token = "Bearer " + localStorage.getItem("Authentication");
-                    localStorage.setItem("aid", '');
                     localStorage.setItem("bid", '');
                     localStorage.setItem("bamount", '');
                     localStorage.setItem("bdate", '');
@@ -346,10 +321,6 @@ async function addHandler() {
                     }
                     await getArticleByName(articleName);
 
-                    if (localStorage.getItem("aid") == '' || localStorage.getItem("aid") == null) {
-                        await addNewArticle(articleName);
-                        await getArticleByName(articleName);
-                    }
                     if (localStorage.getItem("bid") == '' || localStorage.getItem("bid") == null) {
                         await addNewBalance(deb, cred, createdate, amount);
                     }
@@ -443,7 +414,7 @@ function getOperationByID(id) {
         htmlOperations += "</tr>";
         htmlOperations += "<tr align='center'>";
         htmlOperations += "<td>" + operationsList.id + "</td>";
-        htmlOperations += "<td>" + operationsList.article.id + " (" + operationsList[i].article.name + ")" + "</td>";
+        htmlOperations += "<td>" + operationsList.article.id + "(" + operationsList.article.name + ")" + "</td>";
         htmlOperations += "<td>" + operationsList.debit + "</td>";
         htmlOperations += "<td>" + operationsList.credit + "</td>";
         htmlOperations += "<td>" + operationsList.createDate + "</td>";
@@ -476,7 +447,7 @@ function getOperationsByArticleId(id) {
             'Authorization': "Bearer " + localStorage.getItem("Authentication")
         }
     }).then( (response) => {
-        if (response.status == 404) {
+        if (response.status === 404) {
             alert("No operations were found");
             return Promise.reject();
         } else if (response.status === 403){
@@ -507,7 +478,7 @@ function getOperationsByArticleId(id) {
         for (var i = 0; i < operationsList.length; i++) {
             htmlOperations += "<tr align='center'>";
             htmlOperations += "<td>" + operationsList[i].id + "</td>";
-            htmlOperations += "<td>" + operationsList[i].article.id + " (" + operationsList[i].article.name + ")" + "</td>";
+            htmlOperations += "<td>" + operationsList[i].article.id + "(" + operationsList[i].article.name + ")" + "</td>";
             htmlOperations += "<td>" + operationsList[i].debit + "</td>";
             htmlOperations += "<td>" + operationsList[i].credit + "</td>";
             htmlOperations += "<td>" + operationsList[i].createDate + "</td>";
@@ -571,7 +542,7 @@ function getOperationsByBalanceId(id) {
         for (var i = 0; i < operationsList.length; i++) {
             htmlOperations += "<tr align='center'>";
             htmlOperations += "<td>" + operationsList[i].id + "</td>";
-            htmlOperations += "<td>" + operationsList[i].article.id + " (" + operationsList[i].article.name + ")" + "</td>";
+            htmlOperations += "<td>" + operationsList[i].article.id + "(" + operationsList[i].article.name + ")" + "</td>";
             htmlOperations += "<td>" + operationsList[i].debit + "</td>";
             htmlOperations += "<td>" + operationsList[i].credit + "</td>";
             htmlOperations += "<td>" + operationsList[i].createDate + "</td>";
@@ -666,38 +637,68 @@ async function deleteOperation(id) {
 async function openEdit() {
     var htmlOperations = "";
     document.getElementById("input").innerHTML = htmlOperations;
-    htmlOperations += "<p align='center'>" +
-        "<lable class='title'> Article: ";
-    htmlOperations += "<input id=\"article\" class=\"textfield\" type=\"text\" placeholder=\"" + localStorage.getItem("oarticle") + "\">";
+    htmlOperations += "<p align='center'>";
+    htmlOperations += "<lable class='title'>  Debit: ";
+    htmlOperations += "<input id=\"debit\" class=\"textfield\" type=\"number\" min='0' placeholder=\"" + localStorage.getItem("odebit") + "\">"
     htmlOperations += "</label>";
     htmlOperations += "<lable class='title'> Credit: ";
     htmlOperations += "<input id=\"credit\" class=\"textfield\" type=\"number\" min='0' placeholder=\"" + localStorage.getItem("ocredit") + "\">";
     htmlOperations += "</label>";
     htmlOperations += "</p>";
-    htmlOperations += "<p align='center'>";
-    htmlOperations += "<lable class='title'>  Debit: ";
-    htmlOperations += "<input id=\"debit\" class=\"textfield\" type=\"number\" min='0' placeholder=\"" + localStorage.getItem("odebit") + "\">"
-    htmlOperations += "</label>";
-    var create = localStorage.getItem("odate");
-    var day = create.slice(0, 2);
-    var month = create.slice(3, 5);
-    var year = create.slice(6, 10);
-    var createdate = year + "-" + month + "-" + day;
-    var minCreateTMP = localStorage.getItem("bdate");
-    var dayMIN = minCreateTMP.slice(0, 2);
-    var monthMIN = minCreateTMP.slice(3, 5);
-    var yearMIN = minCreateTMP.slice(6, 10);
-    var minCreate = yearMIN + "-" + monthMIN + "-" + dayMIN;
-    htmlOperations += "<label class='title'> Create date: ";
-    htmlOperations += "<input id=\"date\" type=\"date\" name='createDate' value=\"" + createdate + "\" min=\"" + minCreate + "\" max=\"2021-12-31\" >";
-    htmlOperations += "</label>";
-    htmlOperations += "</p>";
-    htmlOperations += "<p align='center'>";
-    htmlOperations += "<label class='title'> Current amount: " + localStorage.getItem("bamount") + "</label>";;
-    htmlOperations += " <button style width=400px onclick='editHandler()'>EDIT</button>";
-    htmlOperations += "</p>";
-
     document.getElementById("input").innerHTML += htmlOperations;
+
+    await fetch("http://localhost:8080/articles/all", {
+        method: "GET",
+        headers: {
+            'Authorization': "Bearer " + localStorage.getItem("Authentication")
+        }
+    }).then( (response) => {
+        if (response.status >= 400) {
+            console.log("Error occurred");
+            return Promise.reject();
+        }
+        return response.json();
+    }).then(function (articlesList) {
+        var htmlOperations = "";
+        var create = localStorage.getItem("odate");
+        var day = create.slice(0, 2);
+        var month = create.slice(3, 5);
+        var year = create.slice(6, 10);
+        var createdate = year + "-" + month + "-" + day;
+        var minCreateTMP = localStorage.getItem("bdate");
+        var dayMIN = minCreateTMP.slice(0, 2);
+        var monthMIN = minCreateTMP.slice(3, 5);
+        var yearMIN = minCreateTMP.slice(6, 10);
+        var minCreate = yearMIN + "-" + monthMIN + "-" + dayMIN;
+        htmlOperations += "<p align='center'>";
+        htmlOperations += "<label class='title'> Create date: ";
+        htmlOperations += "<input id=\"date\" type=\"date\" name='createDate' value=\"" + createdate + "\" min=\"" + minCreate + "\" max=\"2021-12-31\" >";
+        htmlOperations += "</label>";
+        htmlOperations += "<lable class='title'> Article: ";
+        htmlOperations += "<select id='article'>"
+        htmlOperations += "<option value=' '></option>";
+        for (var i = 0; i < articlesList.length; i++) {
+            if (articlesList[i].name === localStorage.getItem("oarticle")) {
+                htmlOperations += "<option selected=\"selected\" value=\"" + articlesList[i].name + "\">" + articlesList[i].name + "</option>";
+            } else {
+                htmlOperations += "<option value=\"" + articlesList[i].name + "\">" + articlesList[i].name + "</option>";
+            }
+        }
+        htmlOperations += "</select>"
+        htmlOperations += "</label>";
+        htmlOperations += "</p>";
+        htmlOperations += "<p align='center'>";
+        htmlOperations += "<label class='title'> Current amount: " + localStorage.getItem("bamount") + "</label>";;
+        htmlOperations += " <button style width=400px onclick='editHandler()'>EDIT</button>";
+        htmlOperations += "</p>";
+
+        document.getElementById("input").innerHTML += htmlOperations;
+    }).catch(() => {
+        console.log("Error occurred");
+        alert("Your access expired or you haven't entered. Log in please.")
+        unAuthorize();
+    });
+
 }
 
 async function editHandler() {

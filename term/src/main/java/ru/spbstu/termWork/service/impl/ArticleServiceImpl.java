@@ -63,7 +63,12 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<Article> articlesList() {
-        return (List<Article>) articleRepository.findAll();
+        return findAllByOrderByNameAsc();
+    }
+
+    @Override
+    public List<Article> findAllByOrderByNameAsc() {
+        return articleRepository.findAllByOrderByNameAsc();
     }
 
 

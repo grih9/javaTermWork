@@ -11,4 +11,5 @@ public interface ArticleService {
     Article findArticles(Long id);
     Article update(Article article);
     List<Article> articlesList();
+    List<Article> findAllByOrderByNameAsc();
 }

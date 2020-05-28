@@ -162,27 +162,34 @@ function getArticleById(id) {
         document.getElementById("wrapper").innerHTML = htmlArticle;
         document.getElementById("input").innerHTML = htmlArticle;
 
+        var isAdmin = Number(localStorage.getItem("admin"));
         htmlArticle += "<table id='articles' border = '1' align='center'>";
         htmlArticle += "<tr align='center'>";
         htmlArticle += "<th width='80px'>id</th>";
         htmlArticle += "<th width='190px'>name</th>";
-        htmlArticle += "<th></br></th>"
-        htmlArticle += "<th></br></th>"
+        if (isAdmin === 1) {
+            htmlArticle += "<th></br></th>";
+            htmlArticle += "<th></br></th>";
+        }
         htmlArticle += "</tr>";
 
         htmlArticle += "<tr align='center'>";
         htmlArticle += "<td>" + article["id"] + "</td>";
         htmlArticle += "<td>" + article["name"] + "</td>";
-        htmlArticle += "<td id=\"d" + article.id + "\"><i onclick='deleteArticle(" + article.id + ")' class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td>";
-        htmlArticle += "<td id=\"e" + article.id + "\"><i onclick='editArticle(" + article.id + ")' class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td>";
+        if (isAdmin === 1) {
+            htmlArticle += "<td id=\"d" + article.id + "\"><i onclick='deleteArticle(" + article.id + ")' class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td>";
+            htmlArticle += "<td id=\"e" + article.id + "\"><i onclick='editArticle(" + article.id + ")' class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td>";
+        }
         htmlArticle +="</tr>";
 
-        htmlArticle += "<tr align='center'>";
-        htmlArticle += "<td><i onclick='openAdd()' class=\"fa fa-plus\" aria-hidden=\"true\"></i></td>";
-        htmlArticle += "<td></br></td>";
-        htmlArticle += "<td></br></td>";
-        htmlArticle += "<td></br></td>";
-        htmlArticle += "</tr>";
+        if (isAdmin === 1) {
+            htmlArticle += "<tr align='center'>";
+            htmlArticle += "<td><i onclick='openAdd()' class=\"fa fa-plus\" aria-hidden=\"true\"></i></td>";
+            htmlArticle += "<td></br></td>";
+            htmlArticle += "<td></br></td>";
+            htmlArticle += "<td></br></td>";
+            htmlArticle += "</tr>";
+        }
         htmlArticle += "</table>";
 
         document.getElementById("wrapper").innerHTML += htmlArticle;
@@ -212,27 +219,34 @@ function getArticleByName(name) {
         document.getElementById("wrapper").innerHTML = htmlArticle;
         document.getElementById("input").innerHTML = htmlArticle;
 
+        var isAdmin = Number(localStorage.getItem("admin"));
         htmlArticle += "<table id='articles' border = '1' align='center'>";
         htmlArticle += "<tr align='center'>";
         htmlArticle += "<th width='80px'>id</th>";
         htmlArticle += "<th width='190px'>name</th>";
-        htmlArticle += "<th></br></th>"
-        htmlArticle += "<th></br></th>"
+        if (isAdmin === 1) {
+            htmlArticle += "<th></br></th>"
+            htmlArticle += "<th></br></th>"
+        }
         htmlArticle += "</tr>";
 
         htmlArticle += "<tr align='center'>";
         htmlArticle += "<td>" + article["id"] + "</td>";
         htmlArticle += "<td>" + article["name"] + "</td>";
-        htmlArticle += "<td id=\"d" + article.id + "\"><i onclick='deleteArticle(" + article.id + ")' class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td>";
-        htmlArticle += "<td id=\"e" + article.id + "\"><i onclick='editArticle(" + article.id + ")' class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td>";
+        if (isAdmin === 1) {
+            htmlArticle += "<td id=\"d" + article.id + "\"><i onclick='deleteArticle(" + article.id + ")' class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td>";
+            htmlArticle += "<td id=\"e" + article.id + "\"><i onclick='editArticle(" + article.id + ")' class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td>";
+        }
         htmlArticle +="</tr>";
 
-        htmlArticle += "<tr align='center'>";
-        htmlArticle += "<td><i onclick='openAdd()' class=\"fa fa-plus\" aria-hidden=\"true\"></i></td>";
-        htmlArticle += "<td></br></td>";
-        htmlArticle += "<td></br></td>";
-        htmlArticle += "<td></br></td>";
-        htmlArticle += "</tr>";
+        if (isAdmin === 1) {
+            htmlArticle += "<tr align='center'>";
+            htmlArticle += "<td><i onclick='openAdd()' class=\"fa fa-plus\" aria-hidden=\"true\"></i></td>";
+            htmlArticle += "<td></br></td>";
+            htmlArticle += "<td></br></td>";
+            htmlArticle += "<td></br></td>";
+            htmlArticle += "</tr>";
+        }
         htmlArticle += "</table>";
 
         document.getElementById("wrapper").innerHTML += htmlArticle;
