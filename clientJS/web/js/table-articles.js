@@ -3,8 +3,28 @@ function unAuthorize() {
     window.location.href = "./index.html";
 }
 
+async function checkAdmin() {
+    await fetch("http://localhost:8080/auth/isAdmin", {
+        method: "GET",
+        headers: {
+            "Authorization": "Bearer " + localStorage.getItem("Authentication")
+        }
+    }).then( (response) => {
+        if(response.status === 403){
+            localStorage.setItem("admin", 0);
+        } else if(response.status === 200) {
+            localStorage.setItem("admin", 1);
+        } else if(response.status >= 400) {
+            console.log("Error occurred");
+            alert("Unexpected error");
+        }
+    });
+}
+
 async function getArticles() {
-    fetch("http://localhost:8080/articles/all", {
+    await checkAdmin();
+
+    await fetch("http://localhost:8080/articles/all", {
         method: "GET",
         headers: {
             "Authorization": "Bearer " + localStorage.getItem("Authentication")
@@ -20,29 +40,41 @@ async function getArticles() {
 
         var htmlArticle = "";
 
+        var isAdmin = Number(localStorage.getItem("admin"));
         htmlArticle += "<table id='articles' border = '1' align='center'>";
         htmlArticle += "<tr align='center'>";
         htmlArticle += "<th width='80px'>id</th>";
         htmlArticle += "<th width='190px'>name</th>";
-        htmlArticle += "<th></br></th>"
-        htmlArticle += "<th></br></th>"
+        if (isAdmin === 1) {
+            htmlArticle += "<th></br></th>"
+            htmlArticle += "<th></br></th>"
+        }
         htmlArticle += "</tr>";
 
         for(var i = 0; i < articlesList.length; i++){
             htmlArticle += "<tr align='center'>";
             htmlArticle += "<td>" + articlesList[i]["id"] + "</td>";
             htmlArticle += "<td>" + articlesList[i]["name"] + "</td>";
-            htmlArticle += "<td id=\"d" + articlesList[i].id + "\"><i onclick='deleteArticle(" + articlesList[i].id + ")' class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td>";
-            htmlArticle += "<td id=\"e" + articlesList[i].id + "\"><i onclick='editArticle(" + articlesList[i].id + ")' class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td>";
+            if (isAdmin === 1) {
+                htmlArticle += "<td id=\"d" + articlesList[i].id + "\"><i onclick='deleteArticle(" + articlesList[i].id + ")' class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td>";
+                htmlArticle += "<td id=\"e" + articlesList[i].id + "\"><i onclick='editArticle(" + articlesList[i].id + ")' class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td>";
+            }
             htmlArticle +="</tr>";
         }
 
-        htmlArticle += "<tr align='center'>";
-        htmlArticle += "<td><i onclick='openAdd()' class=\"fa fa-plus\" aria-hidden=\"true\"></i></td>";
-        htmlArticle += "<td></br></td>";
-        htmlArticle += "<td></br></td>";
-        htmlArticle += "<td></br></td>";
-        htmlArticle += "</tr>";
+        if (isAdmin === 1) {
+            htmlArticle += "<tr align='center'>";
+            htmlArticle += "<td><i onclick='openAdd()' class=\"fa fa-plus\" aria-hidden=\"true\"></i></td>";
+            htmlArticle += "<td></br></td>";
+            htmlArticle += "<td></br></td>";
+            htmlArticle += "<td></br></td>";
+            htmlArticle += "</tr>";
+        } else if (articlesList.length === 0) {
+            htmlArticle += "<tr align='center'>";
+            htmlArticle += "<td></br></td>";
+            htmlArticle += "<td></br></td>";
+            htmlArticle += "</tr>";
+        }
         htmlArticle += "</table>";
 
         document.getElementById("wrapper").innerHTML += htmlArticle;

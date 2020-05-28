@@ -6,10 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.spbstu.termWork.entity.User;
 import ru.spbstu.termWork.service.Impl.AuthServiceImpl;
 
@@ -36,5 +33,10 @@ public class AuthController {
              return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>(user, HttpStatus.CREATED);
+    }
+
+    @GetMapping(value = "/isAdmin")
+    public ResponseEntity isAdmin() {
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

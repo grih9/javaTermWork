@@ -67,7 +67,53 @@ async function getOperations() {
 }
 
 async function openAdd() {
-    fetch("http://localhost:8080/balance/all", {
+    var htmlOperations = "";
+    document.getElementById("input").innerHTML = htmlOperations;
+    htmlOperations += "<p align='center'>";
+    htmlOperations += "<lable class='title'> Credit: ";
+    htmlOperations += "<input id=\"credit\" class=\"textfield\" type=\"number\" min='0' placeholder=\"0\">";
+    htmlOperations += "</label>";
+    htmlOperations += "<lable class='title'>    Debit: ";
+    htmlOperations += "<input id=\"debit\" class=\"textfield\" type=\"number\" min='0' placeholder=\"0\">";
+    htmlOperations += "</label>";
+    htmlOperations += "</p>";
+    document.getElementById("input").innerHTML += htmlOperations;
+
+    await fetch("http://localhost:8080/articles/all", {
+        method: "GET",
+        headers: {
+            'Authorization': "Bearer " + localStorage.getItem("Authentication")
+        }
+    }).then( (response) => {
+        if (response.status >= 400) {
+            console.log("Error occurred");
+            return Promise.reject();
+        }
+        return response.json();
+    }).then(function (articlesList) {
+        var htmlOperations = "";
+        htmlOperations += "<p align='center'>";
+        htmlOperations += "<label class='title'> Create date: ";
+        htmlOperations += "<input id=\"date\" type=\"date\" name='createDate' value=\"2018-01-01\" min=\"2018-01-01\" max=\"2021-12-31\" >";
+        htmlOperations += "</label>";
+        htmlOperations += "<lable class='title'> Article: ";
+        htmlOperations += "<select id='balance'>"
+        htmlOperations += "<option value=''></option>";
+        for (var i = 0; i < articlesList.length; i++) {
+            htmlOperations += "<option value=\"" + articlesList[i].id + "\">" + articlesList[i].name + "</option>";
+        }
+        htmlOperations += "</select>"
+        htmlOperations += "</label>";
+        htmlOperations += "</p>";
+
+        document.getElementById("input").innerHTML += htmlOperations;
+    }).catch(() => {
+        console.log("Error occurred");
+        alert("Your access expired or you haven't entered. Log in please.")
+        unAuthorize();
+    });
+
+    await fetch("http://localhost:8080/balance/all", {
         method: "GET",
         headers: {
             'Authorization': "Bearer " + localStorage.getItem("Authentication")
@@ -80,23 +126,6 @@ async function openAdd() {
         return response.json();
     }).then(function (balanceList) {
         var htmlOperations = "";
-        document.getElementById("input").innerHTML = htmlOperations;
-        htmlOperations += "<p align='center'>";
-        htmlOperations += "<lable class='title'> Article: ";
-        htmlOperations += "<input id=\"article\" class=\"textfield\" type=\"text\" >";
-        htmlOperations += "</label>";
-        htmlOperations += "<lable class='title'> Credit: ";
-        htmlOperations += "<input id=\"credit\" class=\"textfield\" type=\"number\" min='0' placeholder=\"0\">";
-        htmlOperations += "</label>";
-        htmlOperations += "</p>";
-        htmlOperations += "<p align='center'>";
-        htmlOperations += "<lable class='title'>    Debit: ";
-        htmlOperations += "<input id=\"debit\" class=\"textfield\" type=\"number\" min='0' placeholder=\"0\">";
-        htmlOperations += "</label>";
-        htmlOperations += "<label class='title'> Create date: ";
-        htmlOperations += "<input id=\"date\" type=\"date\" name='createDate' value=\"2018-01-01\" min=\"2018-01-01\" max=\"2021-12-31\" >";
-        htmlOperations += "</label>";
-        htmlOperations += "</p>";
         htmlOperations += "<p align='center'>";
         htmlOperations += "<select id='balance'>"
         htmlOperations += "<option value='new'>Add new balance</option>";
@@ -171,29 +200,29 @@ async function getBalanceInfo(id) {
         .catch(() => console.log("Error occurred"));
 }
 
-async function addNewArticle(articleName) {
-    var token = "Bearer " + localStorage.getItem("Authentication");
-    await fetch("http://localhost:8080/articles/add", {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': token
-        },
-        body: JSON.stringify({
-            name: articleName
-        })
-    }).then((response) => {
-        if (response.status === 403){
-            console.log("Error occurred");
-            alert("Your access expired or you haven't entered. Log in please.")
-            unAuthorize();
-        } else if (response.status >= 400) {
-            return Promise.reject();
-        }
-        return response.json();
-    }).catch(() => console.log("Error occurred"));
-
-}
+// async function addNewArticle(articleName) {
+//     var token = "Bearer " + localStorage.getItem("Authentication");
+//     await fetch("http://localhost:8080/articles/add", {
+//         method: "POST",
+//         headers: {
+//             'Content-Type': 'application/json',
+//             'Authorization': token
+//         },
+//         body: JSON.stringify({
+//             name: articleName
+//         })
+//     }).then((response) => {
+//         if (response.status === 403){
+//             console.log("Error occurred");
+//             alert("Your access expired or you haven't entered. Log in please.")
+//             unAuthorize();
+//         } else if (response.status >= 400) {
+//             return Promise.reject();
+//         }
+//         return response.json();
+//     }).catch(() => console.log("Error occurred"));
+//
+// }
 
 async function addNewBalance(deb, cred, createDate, amount) {
     var token = "Bearer " + localStorage.getItem("Authentication");
