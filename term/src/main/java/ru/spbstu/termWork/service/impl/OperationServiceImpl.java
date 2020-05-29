@@ -7,8 +7,6 @@ import ru.spbstu.termWork.entity.Article;
 import ru.spbstu.termWork.entity.Balance;
 import ru.spbstu.termWork.entity.Operation;
 import ru.spbstu.termWork.exception.OperationNotFoundException;
-import ru.spbstu.termWork.repository.ArticleRepository;
-import ru.spbstu.termWork.repository.BalanceRepository;
 import ru.spbstu.termWork.repository.OperationRepository;
 import ru.spbstu.termWork.service.OperationService;
 
@@ -21,12 +19,6 @@ import java.util.Optional;
 public class OperationServiceImpl implements OperationService {
 
     private final OperationRepository operationRepository;
-
-    @Autowired
-    private BalanceRepository balanceRepository;
-
-    @Autowired
-    private ArticleRepository articleRepository;
 
     @Autowired
     public OperationServiceImpl(OperationRepository operationRepository) {

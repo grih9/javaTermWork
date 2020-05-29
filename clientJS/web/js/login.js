@@ -20,9 +20,7 @@ function submitLogin() {
                     return Promise.reject();
                 }
                 return response.json();
-            }).then( (j) => JSON.stringify(j))
-            .then( (data) => JSON.parse(data))
-            .then( (obj) => localStorage.setItem("Authentication", obj["token"]))
+            }).then( (obj) => localStorage.setItem("Authentication", obj["token"]))
             .then( () => window.location.href = "./success.html" )
             .catch( () => alert("User with this login and password is not found"));
     }

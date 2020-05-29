@@ -384,7 +384,7 @@ function getOperationByID(id) {
             'Authorization': "Bearer " + localStorage.getItem("Authentication")
         }
     }).then( (response) => {
-        if (response.status == 404) {
+        if (response.status === 404) {
             alert("No operations were found");
             return Promise.reject();
         }  else if (response.status === 403){
