@@ -720,7 +720,8 @@ async function editHandler() {
         }
         var create = document.getElementById("date").value;
         if (articleName.replace(/\s+/g, ' ').trim() == '') {
-            articleName = localStorage.getItem("oarticle");
+            alert("Choose article please");
+            return;
         }
         if (create.replace(/\s+/g, ' ').trim() == '') {
             alert("Create date is not entered");
@@ -756,10 +757,6 @@ async function editHandler() {
 
                     await getArticleByName(articleName);
 
-                    if (localStorage.getItem("aid") == '' || localStorage.getItem("aid") == null) {
-                        await addNewArticle(articleName);
-                        await getArticleByName(articleName);
-                    }
                     if (localStorage.getItem("bid") == '' || localStorage.getItem("bid") == null) {
                         await addNewBalance(deb, cred, createdate, amount);
                     }

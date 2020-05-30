@@ -43,14 +43,13 @@ function getOperations() {
             htmlOperations += "<td></br></td>";
             htmlOperations += "<td></br></td>";
             htmlOperations += "<td></br></td>";
-            htmlOperations += "<td></br></td>";
             htmlOperations += "</tr>";
         }
 
         for (var i = 0; i < operationsList.length; i++) {
             htmlOperations += "<tr align='center'>";
             htmlOperations += "<td>" + operationsList[i].id + "</td>";
-            htmlOperations += "<td>" + operationsList[i].article.id + " (" + operationsList[i].article.name + ")" + "</td>";
+            htmlOperations += "<td>" + operationsList[i].article.id + "(" + operationsList[i].article.name + ")" + "</td>";
             htmlOperations += "<td>" + operationsList[i].debit + "</td>";
             htmlOperations += "<td>" + operationsList[i].credit + "</td>";
             htmlOperations += "<td>" + operationsList[i].createDate + "</td>";

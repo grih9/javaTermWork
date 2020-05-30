@@ -206,7 +206,7 @@ function searchHandler() {
             htmlBalance += "</tr>";
 
 
-            htmlBalance += "<tr>";
+            htmlBalance += "<tr align='center'>";
             htmlBalance += "<td><i onclick='openAdd()' class=\"fa fa-plus\" aria-hidden=\"true\"></i></td>";
             htmlBalance += "<td></br></td>";
             htmlBalance += "<td></br></td>";
